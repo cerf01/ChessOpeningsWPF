@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+	  <ImplicitUsings>disable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Chess\AssetsSource\Assets\Board.png" />
+    <None Remove="Chess\AssetsSource\Assets\Board\Board2.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Remove="Control\OpeningButton.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Chess\AssetsSource\Assets\Board\Board.png" />
+  </ItemGroup>
+
+</Project>
