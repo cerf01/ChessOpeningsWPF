@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ChessOpeningsWPF.Chess.Movment
+namespace ChessOpeningsWPF.Chess.Movement
 {
     public class Position
     {

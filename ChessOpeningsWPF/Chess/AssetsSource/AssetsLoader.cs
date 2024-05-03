@@ -9,13 +9,13 @@ namespace ChessOpeningsWPF.Chess.AssetsSource
     public static class AssetsLoader
     {
         private static ImageSource LoadSource(string path) =>
-           new BitmapImage(new Uri(path));
+           new BitmapImage(new Uri(path, UriKind.Relative));
 
         private static ImageSource SetWhitePiece(PieceType type) =>
-            LoadSource(Path.GetFullPath($"../../../Chess/AssetsSource/Assets/WhitePieces/{type}W.png"));
+            LoadSource($"Chess/AssetsSource/Assets/WhitePieces/{type}W.png");
 
         private static ImageSource SetBlackPiece(PieceType type) =>
-            LoadSource(Path.GetFullPath($"../../../Chess/AssetsSource/Assets/BlackPieces/{type}B.png"));
+            LoadSource(($"Chess/AssetsSource/Assets/BlackPieces/{type}B.png"));
 
         public static ImageSource GetAsset(PieceColor color, PieceType type) =>
             color == PieceColor.White ? SetWhitePiece(type) : SetBlackPiece(type);

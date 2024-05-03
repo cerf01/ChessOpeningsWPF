@@ -1,93 +1,159 @@
 ﻿using ChessOpeningsWPF.Chess.Abstractions.Interfaces;
 using ChessOpeningsWPF.Chess.Board;
-using ChessOpeningsWPF.Chess.Movment;
+using ChessOpeningsWPF.Chess.Movement;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System;
-using System.IO;
 using System.Media;
 using ChessOpeningsWPF.Chess.AssetsSource;
+using System.Windows.Shapes;
+using System.Windows.Media;
 using System.Windows.Input;
+using ChessOpeningsWPF.Chess;
+using ChessOpeningsWPF.Chess.Abstractions.Enums;
+using System.Linq;
+using System;
 
 namespace ChessOpeningsWPF
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// 
+
+    public delegate void OnPositionSelect(Position position);
+
+    public delegate void OnMove(SoundPlayer sound);
+
     public partial class MainWindow : Window
     {
         private List<List<Image>> _piecesAssets = new List<List<Image>>();
-        private BoardModel _board = new BoardModel();
-        private SoundPlayer _soundPlayer = new SoundPlayer(Path.GetFullPath("../../../Chess/AssetsSource/SoundAssets/MovePieceSound.wav"));
-        private bool _isUsed = false;
+
+        private List<List<Rectangle>> _highlightsRectangles = new List<List<Rectangle>>();
+
+        private Dictionary<Position, IMove> movesCache = new Dictionary<Position, IMove>();
+
+        private GameState _gameState = new GameState(PieceColor.White, BoardModel.InitialBoard());
        
+        private SoundPlayer _soundPlayer = new SoundPlayer(System.IO.Path.GetFullPath("../../../Chess/AssetsSource/SoundAssets/MovePieceSound.wav"));
+
+        private Position _selectedPosition;
+
+        private bool _isUsed = false;
+
+        private event OnPositionSelect _onFromPositionSelect;
+
+        private event OnPositionSelect _onToPositionSelect;
+
+        private event OnMove _onMove;
+
         public MainWindow()
         {
+
             InitializeComponent();
+
             InitialBoard();
-            _board = BoardModel.InitialBoard();
-            DrawPieces(_board);
+
+            DrawPieces(_gameState.Board);
+
             _soundPlayer.Load();
+
+            _onFromPositionSelect += OnFromPositionSelect;
+
+            _onToPositionSelect += OnToPositionSelect;
+
+            _onMove += OnMove;
         }
 
-        
+        private void OnMove(SoundPlayer sound)
+        {
+            sound.Play();
+        }
+
+        private void OnFromPositionSelect (Position position)
+        {
+            if (_gameState.Board[position] is null)
+                return;
+
+            var moves = _gameState.PossibleMovesForPiece(position);
+
+            if (moves.Any())
+            {
+                _selectedPosition = position;
+                SetMovesCache(moves);
+                ShowHighlights();
+            }
+        }
+
+        private void OnToPositionSelect(Position position)
+        {
+            _selectedPosition = null;
+            HideHighlights();
+
+            if (movesCache.TryGetValue(position, out IMove move)) 
+                HandelMove(move);
+        }
+
         private void InitialBoard()
         {
             for (int r = 0; r < 8; r++)
             {
                 _piecesAssets.Add(new List<Image>());
+                _highlightsRectangles.Add(new List<Rectangle>());
                 for (int c = 0; c < 8; c++)
                 {
                     var image = new Image();
+
                     _piecesAssets[r].Add(image);
+
                     GameBoard.Children.Add(image);
+
+                    var rectangle = new Rectangle();
+
+                    _highlightsRectangles[r].Add(rectangle);
+
+                    Highlight.Children.Add(rectangle);
                 }
             }
         }
 
-        private void DrawPiece(IPiece? piece, int r, int c)
-        {
-            if (piece is null)
-            {
-                _piecesAssets[r][c].Source = new BitmapImage();
-                return;
-            }
-            _piecesAssets[r][c].Source = AssetsLoader.GetAsset(piece.Color, piece.Type);
-
-        }
+        private void DrawPiece(IPiece? piece, int r, int c) =>
+            _piecesAssets[r][c].Source = piece is null? new BitmapImage() : AssetsLoader.GetAsset(piece.Color, piece.Type);
 
         public void HandelMove(IMove move)
         {
-            var fromToPositions = move.MoveTo(_board);
+            var moveToPositions = _gameState.MakeMove(move);
 
-            if (fromToPositions is null)
+            if (moveToPositions is null)
                 return;
 
-            foreach (var position in fromToPositions)
-                DrawPiece(_board[position.Row, position.Column], position.Row, position.Column);
+            foreach (var position in moveToPositions)
+                DrawPiece(_gameState.Board[position.Row, position.Column], position.Row, position.Column);
+
+            _onMove.Invoke(_soundPlayer);
         }
 
         public async Task HandelMoves(List<IMove> moves)
-        {
-           
+        {           
             if (_isUsed)
             {
-                _board = BoardModel.InitialBoard();
-                DrawPieces(_board);
+                _gameState.ResetBoard();
+
+                DrawPieces(_gameState.Board);
             }
+
             await Task.Delay(500);
+            
             foreach (var move in moves)
             {
                 HandelMove(move);
-               
-                _soundPlayer.Play();
-                await Task.Delay(1000);
+
+                _onMove.Invoke(_soundPlayer);
+                 await Task.Delay(1000);
             }
+
             _isUsed = true;
         }
 
@@ -102,9 +168,35 @@ namespace ChessOpeningsWPF
             }
         }
 
+        private void SetMovesCache(List<IMove> moves)
+        {
+            movesCache.Clear();
+
+            foreach (var move in moves)
+            {
+                movesCache[move.To] = move;
+            }
+        }
+
+        private void ShowHighlights() 
+        {
+            Color color = Color.FromArgb(150, 125, 255, 125);
+            foreach (var position in movesCache.Keys)
+            {
+                _highlightsRectangles[position.Row][position.Column].Fill = new SolidColorBrush(color);
+            }
+        }
+
+        private void HideHighlights()
+        {
+            foreach (var position in movesCache.Keys)            
+                _highlightsRectangles[position.Row][position.Column].Fill = Brushes.Transparent;           
+        }
+
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;
+
             List<IMove> moves = null;
 
             switch (btn.Name)
@@ -113,7 +205,7 @@ namespace ChessOpeningsWPF
                     {
                         moves = new List<IMove>()
                         {
-                             new MovePiece(new Position(6, 6), new Position(5,6))
+                             new NormalMove(new Position(6, 6), new Position(5,6))
                         };
                     }
                     break;
@@ -121,7 +213,7 @@ namespace ChessOpeningsWPF
                     {
                         moves = new List<IMove>()
                         {
-                              new MovePiece(new Position(6, 3), new Position(4,3))
+                              new NormalMove(new Position(6, 3), new Position(4,3))
                         };                   
                     }
                     break;
@@ -130,7 +222,7 @@ namespace ChessOpeningsWPF
                     {
                         moves = new List<IMove>()
                         {
-                              new MovePiece(new Position(6, 4), new Position(4,4))
+                              new NormalMove(new Position(6, 4), new Position(4,4))
                         };
                     }
                     break;
@@ -139,7 +231,7 @@ namespace ChessOpeningsWPF
                     {
                         moves = new List<IMove>()
                         {
-                            new MovePiece(new Position(6, 1), new Position(5,1))
+                            new NormalMove(new Position(6, 1), new Position(5,1))
                         };
                     }
                     break;
@@ -147,12 +239,37 @@ namespace ChessOpeningsWPF
                     {
                         moves = new List<IMove>()
                         {
-                            new MovePiece(new Position(0, 0), new Position(0,0))
+                            new NormalMove(new Position(0, 0), new Position(0,0))
                         };
                     }break;
             }
             
             await HandelMoves(moves);
+
+        }
+
+        private Position GetSquarePosition(Point point) 
+        {
+            double squareSize = BoardSquare.ActualWidth / 8;
+
+            int row = (int)(point.Y / squareSize);
+            int col = (int)(point.X / squareSize);
+
+            
+
+            return new Position(row, col);
+        }
+
+        private void Border_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Point point = e.GetPosition(BoardSquare);
+
+            var position = GetSquarePosition(point);
+
+            if(_selectedPosition is null)
+                _onFromPositionSelect.Invoke(position);
+            else
+                _onToPositionSelect.Invoke(position);
 
         }
     }

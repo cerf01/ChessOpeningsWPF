@@ -1,6 +1,6 @@
 ﻿using ChessOpeningsWPF.Chess.Abstractions.Enums;
 using ChessOpeningsWPF.Chess.Abstractions.Interfaces;
-using ChessOpeningsWPF.Chess.Movment;
+using ChessOpeningsWPF.Chess.Movement;
 using ChessOpeningsWPF.Chess.Pieces;
 using System.Collections.Generic;
 
@@ -64,8 +64,17 @@ namespace ChessOpeningsWPF.Chess.Board
         public static BoardModel InitialBoard()
         {
             BoardModel board = new BoardModel();
+
             board.SetPieces();
+
             return board;
         }
+
+        public static bool IsInsideBoard(Position position) =>
+            position.Row >= 0 && position.Column >= 0 && position.Row < 8 && position.Column< 8;
+
+        public bool IsEmptySquare(Position position) =>
+            this[position] is null;
+
     }
 }

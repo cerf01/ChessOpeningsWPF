@@ -1,4 +1,7 @@
 ﻿using ChessOpeningsWPF.Chess.Abstractions.Enums;
+using ChessOpeningsWPF.Chess.Board;
+using ChessOpeningsWPF.Chess.Movement;
+using System.Collections.Generic;
 
 namespace ChessOpeningsWPF.Chess.Abstractions.Interfaces
 {
@@ -10,7 +13,12 @@ namespace ChessOpeningsWPF.Chess.Abstractions.Interfaces
 
         bool HasMoved { get; set; }
 
-        public IPiece Copy();
+        public List<Direction> Directions { get; }
 
+        public IPiece Copy();
+       
+        public List<IMove> GetMoves(Position currPosition, BoardModel board);
+
+       
     }
 }

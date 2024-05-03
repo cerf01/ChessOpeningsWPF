@@ -1,4 +1,5 @@
-﻿using ChessOpeningsWPF.Chess.Abstractions.Interfaces;
+﻿using ChessOpeningsWPF.Chess.Abstractions.Enums;
+using ChessOpeningsWPF.Chess.Abstractions.Interfaces;
 using ChessOpeningsWPF.Chess.Board;
 using System;
 using System.Collections.Generic;
@@ -6,16 +7,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChessOpeningsWPF.Chess.Movment
+namespace ChessOpeningsWPF.Chess.Movement
 {
-    internal class MovePiece : IMove
+    public class NormalMove : IMove
     {
         public Position From {  get; }
 
         public Position To { get; }
 
-        public MovePiece(Position from, Position to)
+        public MoveType Type { get; }
+
+
+        public NormalMove(Position from, Position to)
         {
+            Type = MoveType.Normal;
             From = from;
             To = to;
         }
