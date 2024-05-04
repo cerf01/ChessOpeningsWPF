@@ -86,9 +86,10 @@ namespace ChessOpeningsWPF.Chess.Board
             Position position = null;
 
             for (int r = 0; r < _squares.Count; r++)
-                for (int c = 0; c < _squares.Count; c++)
+                for (int c = 0; c < _squares[r].Count; c++)
                 {
                     position = new Position(r, c);
+
                     if (!IsEmptySquare(position))
                         positions.Add(position);
                 }
