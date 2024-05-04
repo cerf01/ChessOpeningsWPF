@@ -2,8 +2,10 @@
 using ChessOpeningsWPF.Chess.Abstractions.Interfaces;
 using ChessOpeningsWPF.Chess.Board;
 using ChessOpeningsWPF.Chess.Movement;
+using ChessOpeningsWPF.Chess.Movement.SpecialMoves;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 
 namespace ChessOpeningsWPF.Chess.Pieces
 {
@@ -61,6 +63,27 @@ namespace ChessOpeningsWPF.Chess.Pieces
             return board[position].Color != Color;
         }
 
+        private static List<IMove> PromotinMoves(Position currPosition, Position toPosition) =>
+            new List<IMove>()
+            { 
+                new PawnPromotion(currPosition, toPosition, PieceType.Queen),
+            };
+
+        private List<IMove> TryToPromote(Position currPosition, Position toPosition)
+        {
+            var moves = new List<IMove>();
+
+            if (toPosition.Row == 0 || toPosition.Row == 7)
+            {
+                foreach (var promotion in PromotinMoves(currPosition, toPosition))
+                    moves.Add(promotion);
+            }
+            else
+                moves.Add(new NormalMove(currPosition, toPosition));
+            
+            return moves;
+        }
+
         private List<IMove> ForvardMoves(Position currPosition, BoardModel board)
         {
             var moves = new List<IMove>();
@@ -68,14 +91,12 @@ namespace ChessOpeningsWPF.Chess.Pieces
             var oneMove = currPosition + _forward;
 
             if (CanMoveTo(oneMove, board))
-            {
-                moves.Add(new NormalMove(currPosition, oneMove));
+                moves = TryToPromote(currPosition, oneMove);
 
-                var twoMove = oneMove + _forward;
+            var twoMove = oneMove + _forward;
 
-                if (!HasMoved && CanMoveTo(twoMove, board))
-                    moves.Add(new NormalMove(currPosition, twoMove));
-            }
+            if (!HasMoved && CanMoveTo(twoMove, board))
+                moves.Add(new DoubleMove(currPosition, twoMove));
 
             return moves;
         }
@@ -85,12 +106,17 @@ namespace ChessOpeningsWPF.Chess.Pieces
             var moves = new List<IMove>();
 
             Position toPosition = null;
-
+            
+            
             for (int i = 2; i < _directions.Count; i++)
             {
                 toPosition = currPosition + _forward + _directions[i];
-                if (CanCaptureAt(toPosition, board))
-                    moves.Add(new NormalMove(currPosition, toPosition));
+
+                if (toPosition == board.GetPawnSkipedPositions(Color == PlayerColor.White ? PlayerColor.Black : PlayerColor.White))
+                    moves.Add(new EnPassant(currPosition, toPosition));
+
+                else if (CanCaptureAt(toPosition, board))
+                    moves.AddRange(TryToPromote(currPosition, toPosition));
             }
 
             return moves;

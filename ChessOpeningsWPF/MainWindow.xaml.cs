@@ -15,6 +15,7 @@ using ChessOpeningsWPF.Chess;
 using ChessOpeningsWPF.Chess.Abstractions.Enums;
 using System.Linq;
 using System;
+using ChessOpeningsWPF.Chess.SortOfChessAI;
 
 namespace ChessOpeningsWPF
 {
@@ -33,9 +34,11 @@ namespace ChessOpeningsWPF
 
         private List<List<Rectangle>> _highlightsRectangles = new List<List<Rectangle>>();
 
-        private Dictionary<Position, IMove> movesCache = new Dictionary<Position, IMove>();
+        private Dictionary<Position, IMove> _movesCache = new Dictionary<Position, IMove>();
 
-        private GameState _gameState = new GameState(PlayerColor.White, BoardModel.InitialBoard());
+        private GameState _gameState;
+
+        private ComputerPlayer _computerPlayer = new ComputerPlayer(3, PlayerColor.Black);
        
         private SoundPlayer _soundPlayer = new SoundPlayer(System.IO.Path.GetFullPath("../../../Chess/AssetsSource/SoundAssets/MovePieceSound.wav"));
 
@@ -55,6 +58,8 @@ namespace ChessOpeningsWPF
             InitializeComponent();
 
             InitialBoard();
+
+            _gameState = new GameState(PlayerColor.White, BoardModel.InitialBoard());
 
             DrawPieces(_gameState.Board);
 
@@ -92,7 +97,7 @@ namespace ChessOpeningsWPF
             _selectedPosition = null;
             HideHighlights();
 
-            if (movesCache.TryGetValue(position, out IMove move)) 
+            if (_movesCache.TryGetValue(position, out IMove move)) 
                 HandelMove(move);
         }
 
@@ -132,14 +137,29 @@ namespace ChessOpeningsWPF
             foreach (var position in moveToPositions)
                 DrawPiece(_gameState.Board[position.Row, position.Column], position.Row, position.Column);
 
+            RowValue.Text = $"{moveToPositions[0].Row}";
+            ColumnValue.Text = $"{moveToPositions[0].Column}";
+
+            ToRowValue.Text = $"{moveToPositions[1].Row}";
+            ToColumnValue.Text = $"{moveToPositions[1].Column}";
+          
             _onMove.Invoke(_soundPlayer);
+            if (_gameState.CurrentPlayerTurn == PlayerColor.Black)
+                MakeComputerMove();
+
+        }
+
+        private void MakeComputerMove() 
+        {
+            _computerPlayer.SerchBestMove((-ComputerPlayer.Infitity), ComputerPlayer.Infitity, ComputerPlayer.Depth,_gameState, _gameState.Board.Copy());
+            HandelMove(_computerPlayer.bestMove);
         }
 
         public async Task HandelMoves(List<IMove> moves)
         {           
             if (_isUsed)
             {
-                _gameState.ResetBoard();
+                _gameState = new GameState(PlayerColor.White, BoardModel.InitialBoard());
 
                 DrawPieces(_gameState.Board);
             }
@@ -169,18 +189,18 @@ namespace ChessOpeningsWPF
 
         private void SetMovesCache(List<IMove> moves)
         {
-            movesCache.Clear();
+            _movesCache.Clear();
 
             foreach (var move in moves)
             {
-                movesCache[move.To] = move;
+                _movesCache[move.To] = move;
             }
         }
 
         private void ShowHighlights() 
         {
             Color color = Color.FromArgb(150, 125, 255, 125);
-            foreach (var position in movesCache.Keys)
+            foreach (var position in _movesCache.Keys)
             {
                 _highlightsRectangles[position.Row][position.Column].Fill = new SolidColorBrush(color);
             }
@@ -188,7 +208,7 @@ namespace ChessOpeningsWPF
 
         private void HideHighlights()
         {
-            foreach (var position in movesCache.Keys)            
+            foreach (var position in _movesCache.Keys)            
                 _highlightsRectangles[position.Row][position.Column].Fill = Brushes.Transparent;           
         }
 
@@ -221,7 +241,8 @@ namespace ChessOpeningsWPF
                     {
                         moves = new List<IMove>()
                         {
-                              new NormalMove(new Position(6, 4), new Position(4,4))
+                              new NormalMove(new Position(6, 4), new Position(4,4)),
+                               new NormalMove(new Position(1, 1), new Position(3,1)),
                         };
                     }
                     break;
@@ -231,7 +252,8 @@ namespace ChessOpeningsWPF
                         moves = new List<IMove>()
                         {
                             new NormalMove(new Position(6, 1), new Position(5,1)),
-                            new NormalMove(new Position(1, 1), new Position(3,1))
+                            new NormalMove(new Position(1, 1), new Position(3,1)),
+                              new NormalMove(new Position(6, 3), new Position(4,3))
                         };
                     }
                     break;
@@ -254,8 +276,6 @@ namespace ChessOpeningsWPF
 
             int row = (int)(point.Y / squareSize);
             int col = (int)(point.X / squareSize);
-
-            
 
             return new Position(row, col);
         }

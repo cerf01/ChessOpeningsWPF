@@ -2,6 +2,7 @@
 using ChessOpeningsWPF.Chess.Abstractions.Interfaces;
 using ChessOpeningsWPF.Chess.Board;
 using ChessOpeningsWPF.Chess.Movement;
+using ChessOpeningsWPF.Chess.Movement.SpecialMoves;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -45,6 +46,45 @@ namespace ChessOpeningsWPF.Chess.Pieces
         public IPiece Copy() =>
           new King(this);
 
+        private bool IsRookMoved(Position position, BoardModel board) 
+        {
+           if(board.IsEmptySquare(position))
+                return true;
+
+           return (board[position].Type == PieceType.Rook && board[position].HasMoved);
+        }
+
+        private bool IsPathClear(List<Position> positions, BoardModel board) =>
+            positions.All(p => board.IsEmptySquare(p));
+        
+        private bool IsRightCastlingPossible(Position position, BoardModel board) 
+        {
+            if (HasMoved)
+                return false;
+            var positions = new List<Position>() 
+            { 
+                new Position(position.Row, 5), 
+                new Position(position.Row, 6) 
+            };
+
+            return IsPathClear(positions, board) && !IsRookMoved(new Position(position.Row, 7), board); ;
+        }
+
+        private bool IsLeftCastlingPossible(Position position, BoardModel board)
+        {
+            if (HasMoved)
+                return false;
+
+            var positions = new List<Position>() 
+            {
+                new Position(position.Row, 1), 
+                new Position(position.Row, 2), 
+                new Position(position.Row, 3) 
+            };
+
+            return IsPathClear(positions, board) && !IsRookMoved(new Position(position.Row, 0), board);
+        }
+
         public List<Position> MovesPositions(Position currPosition, BoardModel board)
         {
             var movePositions = new List<Position>();
@@ -63,11 +103,22 @@ namespace ChessOpeningsWPF.Chess.Pieces
             return movePositions;
         }
 
-        public List<IMove> GetMoves(Position currPosition, BoardModel board) =>
-           MovesPositions(currPosition, board)
-                .Select(p => 
-                    (IMove)new NormalMove(currPosition, p))
-                .ToList();
+        public List<IMove> GetMoves(Position currPosition, BoardModel board)
+        {
+            var moves = new List<IMove>();
+
+            if(IsLeftCastlingPossible(currPosition, board))
+                moves.Add(new Castling(MoveType.CastleL, currPosition));
+            if (IsRightCastlingPossible(currPosition, board)) 
+                moves.Add(new Castling(MoveType.CastleR, currPosition));
+
+            moves.AddRange(MovesPositions(currPosition, board)
+                 .Select(p =>
+                     (IMove)new NormalMove(currPosition, p))
+                 .ToList());
+           
+            return moves;
+        }
 
         public bool CanCaptureEnemyKing(Position position, BoardModel board) =>
             MovesPositions(position, board).Any(p =>

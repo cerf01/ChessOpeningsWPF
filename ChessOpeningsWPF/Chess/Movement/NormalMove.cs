@@ -12,12 +12,8 @@ namespace ChessOpeningsWPF.Chess.Movement
     public class NormalMove : IMove
     {
         public Position From {  get; }
-
         public Position To { get; }
-
         public MoveType Type { get; }
-
-
         public NormalMove(Position from, Position to)
         {
             Type = MoveType.Normal;
@@ -27,7 +23,7 @@ namespace ChessOpeningsWPF.Chess.Movement
 
         public List<Position> MoveTo(BoardModel board)
         {
-            IPiece piece = board[From];
+            var piece = board[From];
             
             if (piece is null)
                 return null;

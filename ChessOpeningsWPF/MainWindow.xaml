@@ -92,87 +92,28 @@
             <TextBlock Text="G" Grid.Column="7" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" />
             <TextBlock Text="H" Grid.Column="8" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" />
 
-            <TextBlock Text="A" Grid.Column="8" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" RenderTransformOrigin="0.5,0.5" >
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="180"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
+            <TextBlock Text=" " x:Name="ColumnValue" Grid.Column="4" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" RenderTransformOrigin="0.5,0.5" >
             </TextBlock>
-            <TextBlock Text="B" Grid.Column="7" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" RenderTransformOrigin="0.5,0.5">
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="180"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
-            <TextBlock Text="C" Grid.Column="6" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" RenderTransformOrigin="0.5,0.5" >
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="180"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
-            <TextBlock Text="D" Grid.Column="5" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" RenderTransformOrigin="0.5,0.5" >
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="180"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
-            <TextBlock Text="E" Grid.Column="4" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" RenderTransformOrigin="0.5,0.5" >
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="180"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
-            <TextBlock Text="F" Grid.Column="3" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" RenderTransformOrigin="0.5,0.5">
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="180"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
+            <TextBlock Text="Column:" Grid.Column="3" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" RenderTransformOrigin="0.5,0.5">
+               
             </TextBlock>
 
-            <TextBlock Text="G" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" RenderTransformOrigin="0.5,0.5">
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="180"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
+            <TextBlock Text="" x:Name="RowValue" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" RenderTransformOrigin="0.5,0.5">
             </TextBlock>
 
-            <TextBlock Text="H" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Margin="0,5,0,0" Height="48" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="180"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
+            <TextBlock Text="Row:"  Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Margin="0,5,0,0" Height="48" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
+            </TextBlock>
+
+            <TextBlock Text=" " x:Name="ToColumnValue" Grid.Column="8" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" RenderTransformOrigin="0.5,0.5" >
+            </TextBlock>
+            <TextBlock Text="To Column:" Grid.Column="7" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" RenderTransformOrigin="0.5,0.5">
+
+            </TextBlock>
+
+            <TextBlock Text="" x:Name="ToRowValue" Grid.Column="6" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" RenderTransformOrigin="0.5,0.5">
+            </TextBlock>
+
+            <TextBlock Text="To Row:"  Grid.Column="5" Grid.Row="0" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Margin="0,5,0,0" Height="48" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
             </TextBlock>
         </Grid>
         <StackPanel>

@@ -13,11 +13,17 @@ namespace ChessOpeningsWPF.Chess
     {
         public BoardModel Board { get; private set; }
         public PlayerColor CurrentPlayerTurn { get;private set; }
+        private string _stateString;
+        private Dictionary<string, int> _stateHistory = new Dictionary<string, int>();
 
         public GameState(PlayerColor currentColorTurn, BoardModel board)
         {
             CurrentPlayerTurn = currentColorTurn;
             Board = board;
+
+            _stateString = new StateString(currentColorTurn, board).ToString();
+
+            _stateHistory[_stateString] = 1;
         }
 
         public List<IMove> AvailableMovesForPiece(Position position)
@@ -38,8 +44,13 @@ namespace ChessOpeningsWPF.Chess
 
         public List<Position> MakeMove(IMove move)
         {
+            Board.SetPawnSkipedPosition(CurrentPlayerTurn, null);
+
             var moveToPositions = move.MoveTo(Board);
+            
             CurrentPlayerTurn = ChangeTurn();
+
+            UpdateStateString();
 
             CheckGameOver();
 
@@ -59,6 +70,11 @@ namespace ChessOpeningsWPF.Chess
                 MessageBox.Show("Game over!");
             
         }
-        
+
+        private void UpdateStateString()
+        {
+            _stateString = new StateString(CurrentPlayerTurn, Board).ToString();
+           
+        }
     }
 }
