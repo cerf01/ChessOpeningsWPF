@@ -15,12 +15,12 @@ namespace ChessOpeningsWPF.Chess.Movement
             Column = column;
         }
 
-        public PieceColor SqueareColor()
+        public PlayerColor SqueareColor()
         {
             if ((Row + Column) % 2 == 0)
-                return PieceColor.White;
+                return PlayerColor.White;
             
-           return PieceColor.Black;
+           return PlayerColor.Black;
         }
 
         public override bool Equals(object? obj)

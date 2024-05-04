@@ -11,7 +11,7 @@ namespace ChessOpeningsWPF.Chess.Pieces
     {
         public PieceType Type => PieceType.Knight;
 
-        public PieceColor Color { get; }
+        public PlayerColor Color { get; }
 
         public bool HasMoved { get; set; } = false;
 
@@ -24,14 +24,19 @@ namespace ChessOpeningsWPF.Chess.Pieces
         };
 
         public List<Direction> Directions { get => _directions; }
+        public Position Position { get; set; }
 
-        public Knight(PieceColor color) =>
+        public Knight(PlayerColor color, Position position)
+        {
             Color = color;
+            Position = position;
+        }
 
         public Knight(Knight knight)
         {
             Color = knight.Color;
             HasMoved = knight.HasMoved;
+            Position = knight.Position;
         }
 
         public IPiece Copy() =>
@@ -50,22 +55,22 @@ namespace ChessOpeningsWPF.Chess.Pieces
             return positions;
         }
 
-        public List<Position> MovePositions(Position currPosition, BoardModel board) =>
+        public List<Position> AvailableMovePositions(Position currPosition, BoardModel board) =>
             PossiblePositions(currPosition)
                              .Where(p =>
                                 BoardModel.IsInsideBoard(p)
                                 && (board.IsEmptySquare(p) || board[p].Color != Color))
                              .ToList();
         
-        public List<Position> MoveDirections(Position currPosition, List<Direction> directions, BoardModel board) =>
-            directions.SelectMany(d => 
-                            MovePositions(currPosition, board))
-                        .ToList();
-
         public List<IMove> GetMoves(Position currPosition, BoardModel board) =>
-            MovePositions(currPosition, board)
+            AvailableMovePositions(currPosition, board)
                 .Select(p => (IMove)new NormalMove(currPosition, p))
                 .ToList();
 
+        public bool CanCaptureEnemyKing(Position position, BoardModel board) =>
+           GetMoves(position, board).Any(m =>
+               board[m.To] is not null &&
+               board[m.To].Type == PieceType.King
+           );
     }
 }

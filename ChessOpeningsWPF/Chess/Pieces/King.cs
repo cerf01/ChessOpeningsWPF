@@ -11,7 +11,7 @@ namespace ChessOpeningsWPF.Chess.Pieces
     {
         public PieceType Type => PieceType.King;
 
-        public PieceColor Color { get; }
+        public PlayerColor Color { get; }
 
         public bool HasMoved { get; set; } = false;
 
@@ -27,20 +27,25 @@ namespace ChessOpeningsWPF.Chess.Pieces
             Movement.Directions.SouthWest,
         };
         public List<Direction> Directions { get => _directions; }
+        public Position Position { get; set; }
 
-        public King(PieceColor color) =>
+        public King(PlayerColor color, Position position)
+        {
             Color = color;
+            Position = position;
+        }
 
-        public King(King king)
+    public King(King king)
         {
             Color = king.Color;
             HasMoved = king.HasMoved;
+            Position = king.Position;
         }
 
         public IPiece Copy() =>
           new King(this);
 
-        public List<Position> MovePositions(Position currPosition, BoardModel board)
+        public List<Position> MovesPositions(Position currPosition, BoardModel board)
         {
             var movePositions = new List<Position>();
 
@@ -59,10 +64,17 @@ namespace ChessOpeningsWPF.Chess.Pieces
         }
 
         public List<IMove> GetMoves(Position currPosition, BoardModel board) =>
-           MovePositions(currPosition, board)
+           MovesPositions(currPosition, board)
                 .Select(p => 
                     (IMove)new NormalMove(currPosition, p))
                 .ToList();
+
+        public bool CanCaptureEnemyKing(Position position, BoardModel board) =>
+            MovesPositions(position, board).Any(p =>
+                board[p] is not null &&
+                board[p].Type == PieceType.King
+            );
+
 
     }
 }

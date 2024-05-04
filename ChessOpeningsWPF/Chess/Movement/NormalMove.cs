@@ -34,9 +34,23 @@ namespace ChessOpeningsWPF.Chess.Movement
 
             board[To] = piece;
             board[From] = null;
+
+            piece.Position = To;
+
             piece.HasMoved = true;
 
             return new List<Position>() { From, To };
+        }
+
+        public bool IsLegal(BoardModel board)
+        {
+            var color = board[From].Color;
+
+            var boardCopy = board.Copy();
+
+            MoveTo(boardCopy);
+            
+            return !boardCopy.IsInCheck(color);
         }
     }
 }

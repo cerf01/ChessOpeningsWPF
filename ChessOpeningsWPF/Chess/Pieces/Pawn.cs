@@ -11,7 +11,7 @@ namespace ChessOpeningsWPF.Chess.Pieces
     {
         public PieceType Type => PieceType.Pawn;
 
-        public PieceColor Color { get; }
+        public PlayerColor Color { get; }
 
         public bool HasMoved { get; set; } = false;
 
@@ -24,21 +24,27 @@ namespace ChessOpeningsWPF.Chess.Pieces
         };
 
         public List<Direction> Directions { get => _directions; }
+        public Position Position { get; set; }
 
         private readonly Direction _forward;
 
-        public Pawn(PieceColor color) 
-        {   Color = color;
-            
-            _forward = Color == PieceColor.White ? _directions[0] : _directions[1];
+        public Pawn(PlayerColor color, Position position)
+        {
+            Color = color;
+
+            Position = position;
+
+            _forward = Color == PlayerColor.White ? _directions[0] : _directions[1];
         }
         public Pawn(Pawn pawn)
         {
             Color = pawn.Color;
 
-            _forward = Color == PieceColor.White ? _directions[0] : _directions[1];
+            _forward = Color == PlayerColor.White ? _directions[0] : _directions[1];
 
             HasMoved = pawn.HasMoved;
+
+            Position = pawn.Position;
         }
 
         public IPiece Copy() =>
@@ -93,6 +99,13 @@ namespace ChessOpeningsWPF.Chess.Pieces
         public List<IMove> GetMoves(Position currPosition, BoardModel board) =>
             ForvardMoves(currPosition, board)
                 .Union(AttackMoves(currPosition, board))
-                .ToList();       
+                .ToList();
+
+        public bool CanCaptureEnemyKing(Position position, BoardModel board) =>
+            AttackMoves(position, board).Any(m => 
+                board[m.To] is not null && 
+                board[m.To].Type == PieceType.King
+            );
+          
     }
 }

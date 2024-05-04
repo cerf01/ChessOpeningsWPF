@@ -17,7 +17,7 @@ namespace ChessOpeningsWPF.Chess.AssetsSource
         private static ImageSource SetBlackPiece(PieceType type) =>
             LoadSource(($"Chess/AssetsSource/Assets/BlackPieces/{type}B.png"));
 
-        public static ImageSource GetAsset(PieceColor color, PieceType type) =>
-            color == PieceColor.White ? SetWhitePiece(type) : SetBlackPiece(type);
+        public static ImageSource GetAsset(PlayerColor color, PieceType type) =>
+            color == PlayerColor.White ? SetWhitePiece(type) : SetBlackPiece(type);
     }
 }

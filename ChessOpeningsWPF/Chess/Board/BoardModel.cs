@@ -3,62 +3,65 @@ using ChessOpeningsWPF.Chess.Abstractions.Interfaces;
 using ChessOpeningsWPF.Chess.Movement;
 using ChessOpeningsWPF.Chess.Pieces;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ChessOpeningsWPF.Chess.Board
 {
     public class BoardModel
     {
-        private readonly List<List<IPiece>> _pieces = new List<List<IPiece>>();
+        private List<List<IPiece>> _squares = new List<List<IPiece>>();
 
         public BoardModel() 
         {
             for (int r = 0; r < 8; r++)
             {
-                _pieces.Add(new List<IPiece>());
+                _squares.Add(new List<IPiece>());
                 for (int c = 0; c < 8; c++)
-                    _pieces[r].Add(null);
+                    _squares[r].Add(null);
                 
             }
         }
 
         public IPiece this[int row, int col] 
         {
-            get { return _pieces[row][col]; }
-            set { _pieces[row][col] = value; }
+            get { return _squares[row][col]; }
+            set { _squares[row][col] = value; }
         }
 
         public IPiece this[Position position]
         {
-            get { return _pieces[position.Row][position.Column]; }
-            set { _pieces[position.Row][position.Column] = value; }
+            get { return _squares[position.Row][position.Column]; }
+            set { _squares[position.Row][position.Column] = value; }
         }
 
         private void SetPieces()
         {
-            this[0, 0] = new Rook(PieceColor.Black);
-            this[0, 1] = new Knight(PieceColor.Black);
-            this[0, 2] = new Bishop(PieceColor.Black);
-            this[0, 3] = new Queen(PieceColor.Black);
-            this[0, 4] = new King(PieceColor.Black);
-            this[0, 5] = new Bishop(PieceColor.Black);
-            this[0, 6] = new Knight(PieceColor.Black);
-            this[0, 7] = new Rook(PieceColor.Black);
 
-           
-            this[7, 0] = new Rook(PieceColor.White);
-            this[7, 1] = new Knight(PieceColor.White);
-            this[7, 2] = new Bishop(PieceColor.White);
-            this[7, 3] = new Queen(PieceColor.White);
-            this[7, 4] = new King(PieceColor.White);
-            this[7, 5] = new Bishop(PieceColor.White);
-            this[7, 6] = new Knight(PieceColor.White);
-            this[7, 7] = new Rook(PieceColor.White);
+            this[0, 0] = new Rook(PlayerColor.Black, new Position(0, 0));
+            this[0, 1] = new Knight(PlayerColor.Black, new Position(0, 1));
+            this[0, 2] = new Bishop(PlayerColor.Black, new Position(0, 2));
+            this[0, 3] = new Queen(PlayerColor.Black, new Position(0, 3));
+            this[0, 4] = new King(PlayerColor.Black, new Position(0, 4));
+            this[0, 5] = new Bishop(PlayerColor.Black, new Position(0, 5));
+            this[0, 6] = new Knight(PlayerColor.Black, new Position(0, 6));
+            this[0, 7] = new Rook(PlayerColor.Black, new Position(0, 7));
+
+            this[7, 0] = new Rook(PlayerColor.White, new Position(7, 0));
+            this[7, 1] = new Knight(PlayerColor.White, new Position(7, 1));
+            this[7, 2] = new Bishop(PlayerColor.White, new Position(7, 2));
+            this[7, 3] = new Queen(PlayerColor.White, new Position(7, 3));
+            this[7, 4] = new King(PlayerColor.White, new Position(7, 4));
+            this[7, 5] = new Bishop(PlayerColor.White, new Position(7, 5));
+            this[7, 6] = new Knight(PlayerColor.White, new Position(7, 6));
+            this[7, 7] = new Rook(PlayerColor.White, new Position(7, 7));
+
 
             for (int c = 0; c < 8; c++)
             {
-                this[1, c] = new Pawn(PieceColor.Black);
-                this[6, c] = new Pawn(PieceColor.White);
+                this[1, c] = new Pawn(PlayerColor.Black, new Position(1, c));
+                this[6, c] = new Pawn(PlayerColor.White, new Position(6, c));
             }
+
         }
 
         public static BoardModel InitialBoard()
@@ -75,6 +78,46 @@ namespace ChessOpeningsWPF.Chess.Board
 
         public bool IsEmptySquare(Position position) =>
             this[position] is null;
+
+        public List<Position> PiecePositions() 
+        {
+            var positions = new List<Position>();
+
+            Position position = null;
+
+            for (int r = 0; r < _squares.Count; r++)
+                for (int c = 0; c < _squares.Count; c++)
+                {
+                    position = new Position(r, c);
+                    if (!IsEmptySquare(position))
+                        positions.Add(position);
+                }
+
+      
+            return positions;
+        }
+
+        public List<Position> PiecePositionsByColor(PlayerColor color) =>
+            PiecePositions()
+                .Where(p => 
+                    this[p].Color == color)
+                .ToList();
+
+        public bool IsInCheck(PlayerColor color) =>
+            PiecePositionsByColor(color == PlayerColor.White ? PlayerColor.Black : PlayerColor.White)
+                .Any(p => 
+                    this[p]
+                    .CanCaptureEnemyKing(p, this));
+
+        public BoardModel Copy() 
+        {
+            var board = new BoardModel();
+
+            foreach (var position in PiecePositions())
+                board[position] = this[position].Copy();
+
+            return board;
+        }
 
     }
 }

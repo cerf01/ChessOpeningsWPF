@@ -11,5 +11,6 @@ namespace ChessOpeningsWPF.Chess.Abstractions.Interfaces
         Position From { get; }
         Position To { get; }
         public List<Position> MoveTo(BoardModel board);
+        public bool IsLegal(BoardModel board);
     }
 }

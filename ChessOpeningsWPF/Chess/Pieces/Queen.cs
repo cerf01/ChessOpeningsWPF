@@ -7,11 +7,11 @@ using System.Linq;
 
 namespace ChessOpeningsWPF.Chess.Pieces
 {
-    public class Queen : IPiece
+    public class Queen : IPiece, ILongStepPiece
     {
         public PieceType Type => PieceType.Queen;
 
-        public PieceColor Color { get; }
+        public PlayerColor Color { get; }
 
         public bool HasMoved { get; set; } = false;
 
@@ -28,14 +28,19 @@ namespace ChessOpeningsWPF.Chess.Pieces
         };
 
         public List<Direction> Directions { get => _directions; }
+        public Position Position { get; set; }
 
-        public Queen(PieceColor color) =>
-          Color = color;
+        public Queen(PlayerColor color, Position position) 
+         {
+                Color = color;
+                Position = position;
+            }
 
-        public Queen(Queen queen)
+    public Queen(Queen queen)
         {
             Color = queen.Color;
             HasMoved = queen.HasMoved;
+            Position =  queen.Position;
         }
 
         public IPiece Copy() =>
@@ -60,12 +65,19 @@ namespace ChessOpeningsWPF.Chess.Pieces
         }
 
         public List<Position> MoveDirections(Position currPosition, List<Direction> directions, BoardModel board) =>
-            directions.SelectMany(d => MovePositions(currPosition, d, board))
+            directions.SelectMany(d => 
+                    MovePositions(currPosition, d, board))
                 .ToList();
 
         public List<IMove> GetMoves(Position currPosition, BoardModel board) =>
           MoveDirections(currPosition, _directions, board)
               .Select(to => (IMove)new NormalMove(currPosition, to))
               .ToList();
+
+        public bool CanCaptureEnemyKing(Position position, BoardModel board) =>
+           GetMoves(position, board).Any(m =>
+               board[m.To] is not null &&
+               board[m.To].Type == PieceType.King
+           );
     }
 }

@@ -35,7 +35,7 @@ namespace ChessOpeningsWPF
 
         private Dictionary<Position, IMove> movesCache = new Dictionary<Position, IMove>();
 
-        private GameState _gameState = new GameState(PieceColor.White, BoardModel.InitialBoard());
+        private GameState _gameState = new GameState(PlayerColor.White, BoardModel.InitialBoard());
        
         private SoundPlayer _soundPlayer = new SoundPlayer(System.IO.Path.GetFullPath("../../../Chess/AssetsSource/SoundAssets/MovePieceSound.wav"));
 
@@ -77,7 +77,7 @@ namespace ChessOpeningsWPF
             if (_gameState.Board[position] is null)
                 return;
 
-            var moves = _gameState.PossibleMovesForPiece(position);
+            var moves = _gameState.AvailableMovesForPiece(position);
 
             if (moves.Any())
             {
@@ -150,7 +150,6 @@ namespace ChessOpeningsWPF
             {
                 HandelMove(move);
 
-                _onMove.Invoke(_soundPlayer);
                  await Task.Delay(1000);
             }
 
@@ -231,7 +230,8 @@ namespace ChessOpeningsWPF
                     {
                         moves = new List<IMove>()
                         {
-                            new NormalMove(new Position(6, 1), new Position(5,1))
+                            new NormalMove(new Position(6, 1), new Position(5,1)),
+                            new NormalMove(new Position(1, 1), new Position(3,1))
                         };
                     }
                     break;

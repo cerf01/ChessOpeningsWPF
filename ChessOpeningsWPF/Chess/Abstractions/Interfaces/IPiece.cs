@@ -9,16 +9,18 @@ namespace ChessOpeningsWPF.Chess.Abstractions.Interfaces
     {
         PieceType Type { get; }
 
-        PieceColor Color { get; }
+        PlayerColor Color { get; }
+
+        Position Position { get; set; }
 
         bool HasMoved { get; set; }
 
         public List<Direction> Directions { get; }
 
         public IPiece Copy();
-       
+             
         public List<IMove> GetMoves(Position currPosition, BoardModel board);
 
-       
+        public bool CanCaptureEnemyKing(Position position, BoardModel board);
     }
 }

@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChessOpeningsWPF.Chess.Abstractions.Interfaces
+namespace ChessOpeningsWPF.Chess.Abstractions.Enums
 {
-    public interface ILongMoveblePiece
+    public enum PlayerColor
     {
+        White,
+        Black,
     }
 }

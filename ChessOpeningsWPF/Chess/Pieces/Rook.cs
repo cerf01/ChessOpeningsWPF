@@ -7,11 +7,11 @@ using System.Linq;
 
 namespace ChessOpeningsWPF.Chess.Pieces
 {
-    public class Rook : IPiece
+    public class Rook : IPiece, ILongStepPiece
     {
         public PieceType Type => PieceType.Rook;
 
-        public PieceColor Color { get; }
+        public PlayerColor Color { get; }
 
         public bool HasMoved { get; set; } = false;
 
@@ -24,14 +24,18 @@ namespace ChessOpeningsWPF.Chess.Pieces
         };
 
         public List<Direction> Directions { get => _directions; }
+        public Position Position { get; set; }
 
-        public Rook(PieceColor color) =>
+        public Rook(PlayerColor color, Position position)
+        {
             Color = color;
-
+            Position = position;
+        }
         public Rook(Rook rook)
         {
             Color = rook.Color;
             HasMoved = rook.HasMoved;
+            Position = rook.Position;
         }
 
         public IPiece Copy() =>
@@ -66,5 +70,10 @@ namespace ChessOpeningsWPF.Chess.Pieces
             directions.SelectMany(d => 
                     MovePositions(currPosition, d, board))
                 .ToList();
+        public bool CanCaptureEnemyKing(Position position, BoardModel board) =>
+          GetMoves(position, board).Any(m =>
+              board[m.To] is not null &&
+              board[m.To].Type == PieceType.King
+          );
     }
 }
