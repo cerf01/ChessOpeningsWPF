@@ -103,22 +103,11 @@ namespace ChessOpeningsWPF.Chess.Pieces
             return movePositions;
         }
 
-        public List<IMove> GetMoves(Position currPosition, BoardModel board)
-        {
-            var moves = new List<IMove>();
-
-            if(IsLeftCastlingPossible(currPosition, board))
-                moves.Add(new Castling(MoveType.CastleL, currPosition));
-            if (IsRightCastlingPossible(currPosition, board)) 
-                moves.Add(new Castling(MoveType.CastleR, currPosition));
-
-            moves.AddRange(MovesPositions(currPosition, board)
-                 .Select(p =>
-                     (IMove)new NormalMove(currPosition, p))
-                 .ToList());
-           
-            return moves;
-        }
+        public List<IMove> GetMoves(Position currPosition, BoardModel board) =>
+           MovesPositions(currPosition, board)
+                .Select(p => 
+                    (IMove)new NormalMove(currPosition, p))
+                .ToList();
 
         public bool CanCaptureEnemyKing(Position position, BoardModel board) =>
             MovesPositions(position, board).Any(p =>
