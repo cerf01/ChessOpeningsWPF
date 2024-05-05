@@ -26,6 +26,8 @@ namespace ChessOpeningsWPF.Chess.Pieces
         public List<Direction> Directions { get => _directions; }
         public Position Position { get; set; }
 
+        public int Value => 500;
+
         public Rook(PlayerColor color, Position position)
         {
             Color = color;

@@ -2,6 +2,7 @@
 using ChessOpeningsWPF.Chess.Abstractions.Interfaces;
 using ChessOpeningsWPF.Chess.Board;
 using ChessOpeningsWPF.Chess.Movement;
+using ChessOpeningsWPF.Chess.SortOfChessAI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,23 +13,30 @@ namespace ChessOpeningsWPF.Chess
     public class GameState
     {
         public BoardModel Board { get; private set; }
-        public PlayerColor CurrentPlayerTurn { get;private set; }
+        public PlayerColor CurrentTurn { get;private set; }
+        public PlayerColor Player;
         private string _stateString;
         private Dictionary<string, int> _stateHistory = new Dictionary<string, int>();
+        private ComputerPlayer _computerPlayer;
 
-        public GameState(PlayerColor currentColorTurn, BoardModel board)
+        public GameState(PlayerColor playerColor, BoardModel board)
         {
-            CurrentPlayerTurn = currentColorTurn;
+            Player = playerColor;
+
+            CurrentTurn = PlayerColor.White;
+
+            _computerPlayer = new ComputerPlayer(3, Player==PlayerColor.White? PlayerColor.Black: PlayerColor.White);
+
             Board = board;
 
-            _stateString = new StateString(currentColorTurn, board).ToString();
+            _stateString = new FENString(CurrentTurn, Board).ToString();
 
             _stateHistory[_stateString] = 1;
         }
 
         public List<IMove> AvailableMovesForPiece(Position position)
         {
-            if (!BoardModel.IsInsideBoard(position) || Board[position].Color != CurrentPlayerTurn)
+            if (!BoardModel.IsInsideBoard(position) || Board[position].Color != CurrentTurn)
                 return new List<IMove>();
 
             var possibleMoves = Board[position].GetMoves(position, Board);
@@ -37,24 +45,30 @@ namespace ChessOpeningsWPF.Chess
         }
 
         public void ResetBoard() 
-            => Board = BoardModel.InitialBoard();
+            => Board = BoardModel.InitialBoard(_stateString);
 
         private PlayerColor ChangeTurn() =>
-            CurrentPlayerTurn == PlayerColor.White ? PlayerColor.Black: PlayerColor.White;
+            CurrentTurn == PlayerColor.White ? PlayerColor.Black: PlayerColor.White;
 
         public List<Position> MakeMove(IMove move)
         {
-            Board.SetPawnSkipedPosition(CurrentPlayerTurn, null);
+            Board.SetPawnSkipedPosition(CurrentTurn, null);
 
             var moveToPositions = move.MoveTo(Board);
             
-            CurrentPlayerTurn = ChangeTurn();
+            CurrentTurn = ChangeTurn();
 
             UpdateStateString();
 
             CheckGameOver();
 
             return moveToPositions;
+        }
+
+        public IMove MakeComputerMove()
+        {
+            _computerPlayer.SerchBestMove((-ComputerPlayer.Infitity), ComputerPlayer.Infitity, ComputerPlayer.Depth, this, Board.Copy());
+           return _computerPlayer.bestMove;
         }
 
         public List<IMove> AllLegalPlayerMoves(PlayerColor color) =>
@@ -66,15 +80,15 @@ namespace ChessOpeningsWPF.Chess
 
         private void CheckGameOver() 
         {
-            if(!AllLegalPlayerMoves(CurrentPlayerTurn).Any())          
+            if(!AllLegalPlayerMoves(CurrentTurn).Any())          
                 MessageBox.Show("Game over!");
             
         }
 
         private void UpdateStateString()
         {
-            _stateString = new StateString(CurrentPlayerTurn, Board).ToString();
-           
+            _stateString = new FENString(CurrentTurn, Board).ToString();
+            _stateHistory[_stateString] = _stateHistory.Count + 1;
         }
     }
 }

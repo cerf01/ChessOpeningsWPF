@@ -3,6 +3,7 @@ using ChessOpeningsWPF.Chess.Abstractions.Interfaces;
 using ChessOpeningsWPF.Chess.Movement;
 using ChessOpeningsWPF.Chess.Movement.SpecialMoves;
 using ChessOpeningsWPF.Chess.Pieces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,6 +20,11 @@ namespace ChessOpeningsWPF.Chess.Board
         };
 
         public BoardModel()
+        {
+            InitSquares();
+        }
+
+        private void InitSquares()
         {
             for (int r = 0; r < 8; r++)
             {
@@ -41,42 +47,62 @@ namespace ChessOpeningsWPF.Chess.Board
             set { _squares[position.Row][position.Column] = value; }
         }
 
-        private void SetPieces()
+        private IPiece GetPieceFormChar(char pieceChar, PlayerColor color, int rank, int file)
         {
-
-            this[0, 0] = new Rook(PlayerColor.Black, new Position(0, 0));
-            this[0, 1] = new Knight(PlayerColor.Black, new Position(0, 1));
-            this[0, 2] = new Bishop(PlayerColor.Black, new Position(0, 2));
-            this[0, 3] = new Queen(PlayerColor.Black, new Position(0, 3));
-            this[0, 4] = new King(PlayerColor.Black, new Position(0, 4));
-            this[0, 5] = new Bishop(PlayerColor.Black, new Position(0, 5));
-            this[0, 6] = new Knight(PlayerColor.Black, new Position(0, 6));
-            this[0, 7] = new Rook(PlayerColor.Black, new Position(0, 7));
-
-            this[7, 0] = new Rook(PlayerColor.White, new Position(7, 0));
-            this[7, 1] = new Knight(PlayerColor.White, new Position(7, 1));
-            this[7, 2] = new Bishop(PlayerColor.White, new Position(7, 2));
-            this[7, 3] = new Queen(PlayerColor.White, new Position(7, 3));
-            this[7, 4] = new King(PlayerColor.White, new Position(7, 4));
-            this[7, 5] = new Bishop(PlayerColor.White, new Position(7, 5));
-            this[7, 6] = new Knight(PlayerColor.White, new Position(7, 6));
-            this[7, 7] = new Rook(PlayerColor.White, new Position(7, 7));
-
-
-            for (int c = 0; c < 8; c++)
+            switch (pieceChar)
             {
-                this[1, c] = new Pawn(PlayerColor.Black, new Position(1, c));
-                this[6, c] = new Pawn(PlayerColor.White, new Position(6, c));
+                case 'p':
+                    return new Pawn(color, new Position(rank, file));
+                case 'b':
+                    return new Bishop(color, new Position(rank, file));
+                case 'r':
+                    return new Rook(color, new Position(rank, file));
+                case 'q':
+                    return new Queen(color, new Position(rank, file));
+                case 'k':
+                    return new King(color, new Position(rank, file));
+                case 'n':
+                    return new Knight(color, new Position(rank, file));
+                default:
+                    return null;
             }
-
         }
 
-        public static BoardModel InitialBoard()
+        public void SetPiecesFromFEN(string fenString)
+        {
+            var str = fenString.Split(' ')[0];
+
+            int rank = 0;
+            int file = 0;
+
+            foreach (var symbol in str)
+            {
+                if (symbol == '/')
+                {
+                    rank++;
+                    file = 0;
+
+                }
+                else
+                {
+                    if (char.IsDigit(symbol))
+                        file += (int)char.GetNumericValue(symbol);
+                    else
+                    {
+                        var pieceColor = char.IsLower(symbol) ? PlayerColor.Black : PlayerColor.White;
+                        _squares[rank][file] = GetPieceFormChar(char.ToLower(symbol), pieceColor, rank, file);
+                        file++;
+                    }
+                }
+            }
+        }
+
+        public static BoardModel InitialBoard(string fenString)
         {
             BoardModel board = new BoardModel();
 
-            board.SetPieces();
-
+            board.SetPiecesFromFEN(fenString);
+           
             return board;
         }
 
@@ -107,7 +133,6 @@ namespace ChessOpeningsWPF.Chess.Board
                     if (!IsEmptySquare(position))
                         positions.Add(position);
                 }
-
 
             return positions;
         }
@@ -154,8 +179,9 @@ namespace ChessOpeningsWPF.Chess.Board
                 
             foreach (var position in pawnPositions.Where(IsInsideBoard))
             {
+
                 piece = this[position];
-                if (piece is not null|| piece.Type != PieceType.Pawn || piece.Color != color)
+                if (piece is null|| piece.Type != PieceType.Pawn || piece.Color != color)
                     continue;
                     
                 var move = new EnPassant(position, skipPosition);
@@ -180,6 +206,5 @@ namespace ChessOpeningsWPF.Chess.Board
             return HasPawnInPosition(color, pawnPositions, skipedPositions);
 
         }
-
     }
 }

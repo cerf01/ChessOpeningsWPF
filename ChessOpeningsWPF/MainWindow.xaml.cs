@@ -37,8 +37,6 @@ namespace ChessOpeningsWPF
         private Dictionary<Position, IMove> _movesCache = new Dictionary<Position, IMove>();
 
         private GameState _gameState;
-
-        private ComputerPlayer _computerPlayer = new ComputerPlayer(3, PlayerColor.Black);
        
         private SoundPlayer _soundPlayer = new SoundPlayer(System.IO.Path.GetFullPath("../../../Chess/AssetsSource/SoundAssets/MovePieceSound.wav"));
 
@@ -59,7 +57,7 @@ namespace ChessOpeningsWPF
 
             InitialBoard();
 
-            _gameState = new GameState(PlayerColor.White, BoardModel.InitialBoard());
+            _gameState = new GameState(PlayerColor.White, BoardModel.InitialBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq"));
 
             DrawPieces(_gameState.Board);
 
@@ -144,22 +142,13 @@ namespace ChessOpeningsWPF
             ToColumnValue.Text = $"{moveToPositions[1].Column}";
           
             _onMove.Invoke(_soundPlayer);
-            if (_gameState.CurrentPlayerTurn == PlayerColor.Black)
-                MakeComputerMove();
-
-        }
-
-        private void MakeComputerMove() 
-        {
-            _computerPlayer.SerchBestMove((-ComputerPlayer.Infitity), ComputerPlayer.Infitity, ComputerPlayer.Depth,_gameState, _gameState.Board.Copy());
-            HandelMove(_computerPlayer.bestMove);
         }
 
         public async Task HandelMoves(List<IMove> moves)
         {           
             if (_isUsed)
             {
-                _gameState = new GameState(PlayerColor.White, BoardModel.InitialBoard());
+                _gameState = new GameState(PlayerColor.White, BoardModel.InitialBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq"));
 
                 DrawPieces(_gameState.Board);
             }
@@ -290,6 +279,9 @@ namespace ChessOpeningsWPF
                 _onFromPositionSelect.Invoke(position);
             else
                 _onToPositionSelect.Invoke(position);
+
+            if (_gameState.CurrentTurn != _gameState.Player)
+                HandelMove(_gameState.MakeComputerMove());
 
         }
     }

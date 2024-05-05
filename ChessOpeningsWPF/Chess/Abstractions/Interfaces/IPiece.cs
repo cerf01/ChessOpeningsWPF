@@ -13,6 +13,8 @@ namespace ChessOpeningsWPF.Chess.Abstractions.Interfaces
 
         Position Position { get; set; }
 
+        int Value { get; }
+
         bool HasMoved { get; set; }
 
         public List<Direction> Directions { get; }

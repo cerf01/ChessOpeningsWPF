@@ -28,6 +28,8 @@ namespace ChessOpeningsWPF.Chess.Pieces
         public List<Direction> Directions { get => _directions; }
         public Position Position { get; set; }
 
+        public int Value => 100;
+
         private readonly Direction _forward;
 
         public Pawn(PlayerColor color, Position position)
@@ -111,12 +113,8 @@ namespace ChessOpeningsWPF.Chess.Pieces
             for (int i = 2; i < _directions.Count; i++)
             {
                 toPosition = currPosition + _forward + _directions[i];
-
-                if (toPosition == board.GetPawnSkipedPositions(Color == PlayerColor.White ? PlayerColor.Black : PlayerColor.White))
-                    moves.Add(new EnPassant(currPosition, toPosition));
-
-                else if (CanCaptureAt(toPosition, board))
-                    moves.AddRange(TryToPromote(currPosition, toPosition));
+                if (CanCaptureAt(toPosition, board))
+                    moves.Add(new NormalMove(currPosition, toPosition));
             }
 
             return moves;

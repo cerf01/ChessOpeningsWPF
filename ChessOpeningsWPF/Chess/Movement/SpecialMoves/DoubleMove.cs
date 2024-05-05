@@ -35,7 +35,10 @@ namespace ChessOpeningsWPF.Chess.Movement.SpecialMoves
 
         public List<Position> MoveTo(BoardModel board)
         {
+            if (board[From] is null)
+                return new List<Position>();
             var pieceColor = board[From].Color;
+
 
             board.SetPawnSkipedPosition(pieceColor, _skiped);
 

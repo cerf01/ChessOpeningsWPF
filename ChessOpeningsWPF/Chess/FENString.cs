@@ -5,17 +5,17 @@ using System.Text;
 
 namespace ChessOpeningsWPF.Chess
 {
-    public class StateString
+    public class FENString
     {
         private StringBuilder _stringBuilder = new StringBuilder();
-        public StateString(PlayerColor currentPlayer, BoardModel board) 
+        public FENString(PlayerColor currentPlayer, BoardModel board)
         {
             AddPiecePlacment(board);
             _stringBuilder.Append(' ');
-            
-            _stringBuilder.Append(currentPlayer.ToString()[0]);
+
+            _stringBuilder.Append(char.ToLower(currentPlayer.ToString()[0]));
             _stringBuilder.Append(' ');
-            
+
             AddCatlingsRights(board);
             _stringBuilder.Append(' ');
 
@@ -24,8 +24,8 @@ namespace ChessOpeningsWPF.Chess
         }
 
         private static char PieceChar(IPiece piece) =>
-            piece.Color == PlayerColor.White ? char.ToLower(piece.Type.ToString()[0]) : piece.Type.ToString()[0];
-   
+            piece.Color == PlayerColor.White ? piece.Type.ToString()[0] :  char.ToLower(piece.Type.ToString()[0]);
+
         private void AddRowData(BoardModel board, int row)
         {
             int empty = 0;
@@ -41,7 +41,7 @@ namespace ChessOpeningsWPF.Chess
                         _stringBuilder.Append(empty);
                         empty = 0;
                     }
-                    _stringBuilder.Append(PieceChar(board[row,c]));
+                    _stringBuilder.Append(PieceChar(board[row, c]));
                 }
             }
 
@@ -56,7 +56,7 @@ namespace ChessOpeningsWPF.Chess
         {
             for (int r = 0; r < 8; r++)
             {
-                if(r > 0)
+                if (r > 0)
                     _stringBuilder.Append('/');
                 AddRowData(board, r);
             }
@@ -98,12 +98,12 @@ namespace ChessOpeningsWPF.Chess
 
             var position = board.GetPawnSkipedPositions(color);
 
-            _stringBuilder.Append('a'+position.Column);
+            _stringBuilder.Append('a' + position.Column);
             _stringBuilder.Append(position.Row);
         }
 
         public override string ToString() =>
             _stringBuilder.ToString();
-        
+
     }
 }
