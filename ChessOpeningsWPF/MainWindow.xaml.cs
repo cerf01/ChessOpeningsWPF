@@ -283,6 +283,7 @@ namespace ChessOpeningsWPF
             if (_gameState.CurrentTurn != _gameState.Player)
                 HandelMove(_gameState.MakeComputerMove());
 
+
         }
     }
 }

@@ -25,7 +25,7 @@ namespace ChessOpeningsWPF.Chess
 
             CurrentTurn = PlayerColor.White;
 
-            _computerPlayer = new ComputerPlayer(3, Player==PlayerColor.White? PlayerColor.Black: PlayerColor.White);
+            _computerPlayer = new ComputerPlayer(2, Player==PlayerColor.White? PlayerColor.Black: PlayerColor.White);
 
             Board = board;
 
@@ -67,8 +67,7 @@ namespace ChessOpeningsWPF.Chess
 
         public IMove MakeComputerMove()
         {
-            _computerPlayer.SerchBestMove((-ComputerPlayer.Infitity), ComputerPlayer.Infitity, ComputerPlayer.Depth, this, Board.Copy());
-           return _computerPlayer.bestMove;
+                    return _computerPlayer.GetBestMove(Board, this);
         }
 
         public List<IMove> AllLegalPlayerMoves(PlayerColor color) =>

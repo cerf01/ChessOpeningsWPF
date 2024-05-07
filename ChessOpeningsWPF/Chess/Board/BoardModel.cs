@@ -112,7 +112,6 @@ namespace ChessOpeningsWPF.Chess.Board
         public void SetPawnSkipedPosition(PlayerColor color, Position position) =>
             _pawnSkiped[color] = position;
 
-
         public static bool IsInsideBoard(Position position) =>
             position.Row >= 0 && position.Column >= 0 && position.Row < 8 && position.Column < 8;
 

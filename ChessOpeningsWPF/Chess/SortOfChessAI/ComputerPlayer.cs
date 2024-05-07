@@ -49,31 +49,38 @@ namespace ChessOpeningsWPF.Chess.SortOfChessAI
             {
                 moveScore[i] = 0;
 
-                if (moveList[i].To is null)
+                if (board[moveList[i].To] is not null && board[moveList[i].From] is not null)
                     moveScore[i] += 10 * board[moveList[i].To].Value - board[moveList[i].From].Value;
 
-            }
+                if (board[moveList[i].From] is not null && board[moveList[i].To] is not null&& board[moveList[i].To].Color != _currentTurn)
+                    moveScore[i] -= board[moveList[i].From].Value;
 
-            for (int sorted = 0; sorted < moveList.Count; sorted++)
+            }
+        }
+
+        public IMove GetBestMove(BoardModel board, GameState state)
+        {
+            int bestValue = int.MinValue;
+            IMove bestMove = null;
+            bool turn;
+
+           var possibleMoves = state.AllLegalPlayerMoves(_currentTurn);
+
+            OrderMoves(possibleMoves, board);
+            foreach (var move in possibleMoves)
             {
-                int bestScore = int.MinValue;
-                int bestScoreIndex = 0;
+                BoardModel newBoard = state.Board.Copy();
 
-                for (int i = sorted; i < moveList.Count; i++)
+                int value = SerchBestMove(Depth, int.MinValue, int.MaxValue, state, newBoard );
+
+                if (value >= bestValue)
                 {
-                    if (moveScore[i] > bestScore)
-                    {
-                        bestScore = moveScore[i];
-                        bestScoreIndex = i;
-                    }
+                    bestValue = value;
+                    bestMove = move;
                 }
-
-                // swap
-
-                IMove bestMove = moveList[bestScoreIndex];
-                moveList[bestScoreIndex] = moveList[sorted];
-                moveList[sorted] = bestMove;
             }
+
+            return bestMove;
         }
 
         public int SerchBestMove(int alpha, int beta, int depth, GameState state, BoardModel board)
@@ -86,15 +93,17 @@ namespace ChessOpeningsWPF.Chess.SortOfChessAI
                 return 0;
 
 
-            int evaluation = 0;
+            int evaluation = -Infitity;
             OrderMoves(moves, board);
             foreach (var move in moves)
             {
-                move.MoveTo(board);
-                evaluation = -SerchBestMove(-alpha, -beta, depth - 1, state, board);
+                var newBoard = board.Copy();
+                move.MoveTo(newBoard);
+                evaluation = -SerchBestMove(-alpha, -beta, depth - 1, state, newBoard);
 
                 if (evaluation >= beta)
-                    return beta;            
+                    return beta;         
+                
                 bestMove = move;
                 alpha = Math.Max(alpha, evaluation);
             }
