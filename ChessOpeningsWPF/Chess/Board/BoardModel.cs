@@ -23,7 +23,6 @@ namespace ChessOpeningsWPF.Chess.Board
 
         public BoardModel()
         {
-
             InitSquares();
         }
 
@@ -107,7 +106,6 @@ namespace ChessOpeningsWPF.Chess.Board
 
         public bool PawnPromoted(Position position)
         {
-
             if (this[position].Type == PieceType.Pawn)
             {
                 if(this[position].Color == PlayerColor.White && position.Row == 0 || this[position].Color == PlayerColor.Black && position.Row == 7)
@@ -134,6 +132,26 @@ namespace ChessOpeningsWPF.Chess.Board
                    this[p].GetMoves(p, this))
                .Where(m => m.IsLegal(this))
                .ToList();
+
+        public List<IMove> AllCapturePlayerMoves(PlayerColor color)
+        {
+           var moves = PiecePositionsByColor(color)
+            .SelectMany(p =>
+                this[p].GetMoves(p, this))
+            .Where(m => m.IsLegal(this))
+            .ToList();
+
+            var captureMoves = new List<IMove>();
+
+            foreach (var move in moves)
+            {
+                if (!IsEmptySquare(move.To))
+                    if (this[move.To].Color != color)
+                        captureMoves.Add(move);
+            }
+
+            return captureMoves;
+        }
 
         public static BoardModel InitialBoard(string fenString)
         {
@@ -185,6 +203,10 @@ namespace ChessOpeningsWPF.Chess.Board
                 .Any(p =>
                     this[p]
                     .CanCaptureEnemyKing(p, this));
+
+        public bool IsInAttack(PlayerColor color, Position position) =>
+         PiecePositionsByColor(color == PlayerColor.White ? PlayerColor.Black : PlayerColor.White)
+             .Any(p => p == position  && this[p].CanCaptureEnemy(p, this));
 
         public BoardModel Copy()
         {

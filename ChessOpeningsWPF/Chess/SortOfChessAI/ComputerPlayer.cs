@@ -96,7 +96,7 @@ namespace ChessOpeningsWPF.Chess.SortOfChessAI
 
         private List<int[,]> _bestBPos = new List<int[,]>()        
         {
-           Invert(bestPawnPositions),
+            Invert(bestPawnPositions),
             Invert(bestNightPositions),
             Invert(bestBishopPositions),
             Invert(bestRookPositions),
@@ -111,23 +111,7 @@ namespace ChessOpeningsWPF.Chess.SortOfChessAI
 
         }
 
-
-
-        public int CalculatePoint(BoardModel board, bool isWhite)
-        {
-            int scoreWhite = 0;
-            int scoreBlack = 0;
-
-            board.PiecePositionsByColor(PlayerColor.White).ForEach(p => scoreWhite += board[p].Value);
-            board.PiecePositionsByColor(PlayerColor.Black).ForEach(p => scoreBlack += board[p].Value);
-
-            int evaluation = scoreWhite - scoreBlack;
-
-            int prespective = (isWhite) ? 1 : -1;
-            return evaluation * prespective;
-        }
-
-        private static int[,] Invert(int[,] table)
+        public static int[,] Invert(int[,] table)
         {
             int[,] ret = new int[8, 8];
             for (int i = 0; i <= 7; i++)
@@ -140,212 +124,179 @@ namespace ChessOpeningsWPF.Chess.SortOfChessAI
             return ret;
         }
 
-        public IMove GetbestMove(GameState state) 
+        public IMove GetBestMove(GameState state)
         {
-            int bestValue = int.MinValue;
-            List<IMove> possibleMoves = state.Board.AllLegalPlayerMoves(state.CurrentTurn);
+  
+            var possibleMoves = state.Board.AllLegalPlayerMoves(state.CurrentTurn);
 
-            OrderMoves(possibleMoves, state.Board);
-            foreach (var move in possibleMoves)
-            {
-                var newBoard = state.Board.Copy();
-                move.MoveTo(newBoard);
-                int value = SerchBestMove(int.MinValue, int.MaxValue, Depth, newBoard, true) ;
-                if (value >= bestValue)
-                {
-                    bestValue = value;
-                    bestMove = move;
-                }
-            }
-          
+            SerchBestMove(state, 4, int.MinValue, int.MaxValue); 
+
+            OrderMoves(possibleMoves, state);
+            var index = 0;
+            var q = possibleMoves.Count;
+            var bestMove = possibleMoves[index];
+            var w = state.Board[bestMove.To];
             return bestMove;
         }
 
-        public int SerchBestMove(int alpha, int beta, int depth, BoardModel board, bool isMaximizing)
+        int SerchBestMove(GameState state, int depth, int alpha, int beta)
         {
-            if(depth == 0)
-                return CalculatePoint(board, isMaximizing);
-
-            if (isMaximizing)
+            if (depth == 0)
+                return SearchAllCapture(state, alpha, beta);
+            var moves = state.Board.AllLegalPlayerMoves(state.CurrentTurn);
+            if (moves.Count == 0)
             {
-                int bestValue = int.MinValue;
-
-                var moves = board.AllLegalPlayerMoves(PlayerColor.Black);
-
-                int evaluation = -Infitity;
-
-                OrderMoves(moves, board);
-                foreach (var move in moves)
+                if (state.Board.IsInCheck(state.CurrentTurn))
                 {
-                    var temp = board[move.From];
-                    var newBoard = board.Copy();
-                    move.MoveTo(newBoard);
-
-                    evaluation = SerchBestMove(alpha, beta, depth - 1, newBoard, false);
-
-                    bestValue = Math.Max(bestValue, evaluation);
-
-                    alpha = Math.Max(alpha, evaluation);
-
-                    if (beta <= alpha)
-                        return bestValue;
-
+                    return int.MinValue;
                 }
-                return bestValue;
-
+                return 0;
             }
-            else
+
+            foreach (var move in moves)
             {
-                int bestValue = int.MaxValue;
+                state.MakeMove(move);
+                int evaluation = -SerchBestMove(state, depth - 1, -beta, -alpha);
+                state.UndoMove(move);
 
-                var moves = board.AllLegalPlayerMoves(PlayerColor.White);
-
-                int evaluation = -Infitity;
-
-                OrderMoves(moves, board);
-                foreach (var move in moves)
-                {
-                    var temp = board[move.From];
-                    var newBoard = board.Copy();
-                    move.MoveTo(newBoard);
-
-                    evaluation = SerchBestMove(alpha, beta, depth - 1, newBoard, true);
-
-                    bestValue = Math.Min(bestValue, evaluation);
-
-                    beta = Math.Min(beta, evaluation);
-
-                    if (beta <= alpha)
-                          return bestValue;
-
-                }
-                return bestValue;
+                if (evaluation >= beta)
+                    return beta;
+                alpha = Math.Max(alpha, evaluation);
             }
-            
-
-
+            return alpha;
         }
 
-        private int GetBestPosition(IPiece piece, Position position)
+        bool MoveIsCheck(GameState state, IMove move)
         {
-            if (piece.Color == PlayerColor.White)
+            state.MakeMove(move);
+            bool isMate = state.Board.IsInCheck(state.CurrentTurn);
+            state.UndoMove(move);
+            return isMate;
+        }
+        bool MoveIsOnAttack(GameState state, IMove move)
+        {
+            state.MakeMove(move);
+            bool isMate = state.Board.IsInAttack(state.CurrentTurn, move.To);
+            state.UndoMove(move);
+            return isMate;
+        }
+
+        public int SearchAllCapture(GameState state, int alpha, int beta)
+        {
+            int evaluation = CalculatePoint(state);
+            if (evaluation >= beta) 
+                return beta;
+            alpha = Math.Max(alpha, evaluation);
+
+            var captureMoves = state.Board.AllCapturePlayerMoves(state.CurrentTurn);
+            OrderMoves(captureMoves, state);
+            foreach (var move in captureMoves)
             {
-                switch (piece.Type)
-                {
-                    case PieceType.Pawn:
-                        return _bestWPos[0][position.Row, position.Column];
-                    case PieceType.Night:
-                        return _bestWPos[1][position.Row, position.Column];
-                    case PieceType.Bishop:
-                        return _bestWPos[2][position.Row, position.Column];
-                    case PieceType.Rook:
-                        return _bestWPos[3][position.Row, position.Column];
-                    case PieceType.Queen:
-                        return _bestWPos[4][position.Row, position.Column];
-                    case PieceType.King:
-                        return _bestWPos[5][position.Row, position.Column];   
-                }
+                state.MakeMove(move);
+                evaluation = -SearchAllCapture(state, -beta, -alpha);
+                state.UndoMove(move);
+
+                if (evaluation >= beta)
+                    return beta;
+                alpha = Math.Max(alpha, evaluation);
             }
+            return alpha;
+        }
+
+        private int CalculatePoint(GameState state)
+        {
+            var whitePieces = 0;
+            var blackPieces = 0;
+            state.Board.PiecePositionsByColor(PlayerColor.White).ForEach(p => whitePieces += state.Board[p].Value);
+            state.Board.PiecePositionsByColor(PlayerColor.Black).ForEach(p => whitePieces += state.Board[p].Value);
+
+            var perspective = state.CurrentTurn == PlayerColor.White ? 1 : -1;
+
+            return (whitePieces - blackPieces) * perspective;
+        }
+
+        private int GetBestPosition(IPiece piece, Position square)
+        {
+            var source = piece.Color == PlayerColor.Black ? _bestBPos : _bestWPos;
 
             switch (piece.Type)
             {
                 case PieceType.Pawn:
-                    return _bestBPos[0][position.Row, position.Column];
+                    return source[0][square.Row, square.Column];
                 case PieceType.Night:
-                    return _bestBPos[1][position.Row, position.Column];
+                    return source[1][square.Row, square.Column];
                 case PieceType.Bishop:
-                    return _bestBPos[2][position.Row, position.Column];
+                    return source[2][square.Row, square.Column];
                 case PieceType.Rook:
-                    return _bestBPos[3][position.Row, position.Column];
+                    return source[3][square.Row, square.Column];
                 case PieceType.Queen:
-                    return _bestBPos[4][position.Row, position.Column];
+                    return source[4][square.Row, square.Column];
                 case PieceType.King:
-                    return _bestBPos[5][position.Row, position.Column];
+                    return source[5][square.Row, square.Column];
             }
 
             return 0;
 
         }
 
-/*        private void OrderMoves(List<IMove> moveList, BoardModel board)
+        private void OrderMoves(List<IMove> moveList, GameState state)
         {
             int[] moveScore = new int[moveList.Count];
 
-            foreach (var move in moveList) 
-            {
-                var movePiece = board[move.From];
-                var capturatePiece = board[move.To];
-
-                if (board[move.To] != null)
-                {                    
-                    moveScore[moveList.IndexOf(move)] += 10 * capturatePiece.Value - movePiece.Value;
-
-                }
-            }
-
-            for (int sorted = 0; sorted < moveList.Count; sorted++)
-            {
-                int bestScore = int.MinValue;
-                int bestScoreIndex = 0;
-
-                for (int i = sorted; i < moveList.Count; i++)
-                {
-                    if (moveScore[i] > bestScore)
-                    {
-                        bestScore = moveScore[i];
-                        bestScoreIndex = i;
-                    }
-                }
-
-                // swap
-
-                var bestMove = moveList[bestScoreIndex];
-                moveList[bestScoreIndex] = moveList[sorted];
-                moveList[sorted] = bestMove;
-            }
-
-        }*/
-
-        private void OrderMoves(List<IMove> moveList, BoardModel board)
-        {
-            int[] moveScore = new int[moveList.Count];
 
             for (int i = 0; i < moveList.Count; i++)
             {
+                var movedPiece = state.Board[moveList[i].From];
+
                 moveScore[i] = 0;
+                if(!state.Board.IsEmptySquare(moveList[i].From) && !state.Board.IsEmptySquare(moveList[i].To))
+                     moveScore[i] += 10 * movedPiece.Value - state.Board[moveList[i].To].Value;
 
-                if (board[moveList[i].To] != null)
-                {
-                    moveScore[i] += 10 * board[moveList[i].To].Value - board[moveList[i].From].Value;
-                }
-
-                if (board.PawnPromoted(moveList[i].From))
-                {
+                if (moveList[i].Type == MoveType.PawnPromotion)
                     moveScore[i] += new Queen(PlayerColor.Black, new Position(0,0)).Value;
-                }
+
+                if (MoveIsCheck(state, moveList[i]))
+                   moveScore[i] += int.MaxValue;
+
+                if (MoveIsOnAttack(state, moveList[i]))
+                    moveScore[i] -= movedPiece.Value;
+
+
+                moveScore[i] += GetBestPosition(movedPiece, moveList[i].To);
+
 
             }
+            Quicksort(moveList, moveScore, 0, moveList.Count - 1);
+        }
 
-            for (int sorted = 0; sorted < moveList.Count; sorted++)
+        public static void Quicksort(List<IMove> values, int[] scores, int low, int high)
+        {
+            if (low < high)
             {
-                int bestScore = int.MinValue;
-                int bestScoreIndex = 0;
-
-                for (int i = sorted; i < moveList.Count; i++)
-                {
-                    if (moveScore[i] > bestScore)
-                    {
-                        bestScore = moveScore[i];
-                        bestScoreIndex = i;
-                    }
-                }
-
-                // swap
-
-                var bestMove = moveList[bestScoreIndex];
-                moveList[bestScoreIndex] = moveList[sorted];
-                moveList[sorted] = bestMove;
+                int pivotIndex = Partition(values, scores, low, high);
+                Quicksort(values, scores, low, pivotIndex - 1);
+                Quicksort(values, scores, pivotIndex + 1, high);
             }
+        }
+
+        static int Partition(List<IMove> values, int[] scores, int low, int high)
+        {
+            int pivotScore = scores[high];
+            int i = low - 1;
+
+            for (int j = low; j <= high - 1; j++)
+            {
+                if (scores[j] > pivotScore)
+                {
+                    i++;
+                    (values[i], values[j]) = (values[j], values[i]);
+                    (scores[i], scores[j]) = (scores[j], scores[i]);
+                }
+            }
+            (values[i + 1], values[high]) = (values[high], values[i + 1]);
+            (scores[i + 1], scores[high]) = (scores[high], scores[i + 1]);
+
+            return i + 1;
         }
 
     }

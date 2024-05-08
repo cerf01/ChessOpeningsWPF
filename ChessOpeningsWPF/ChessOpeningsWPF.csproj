@@ -15,7 +15,8 @@
     <None Remove="Chess\AssetsSource\Assets\BlackPieces\PawnB.png" />
     <None Remove="Chess\AssetsSource\Assets\BlackPieces\QueenB.png" />
     <None Remove="Chess\AssetsSource\Assets\BlackPieces\RookB.png" />
-    <None Remove="Chess\AssetsSource\Assets\Board.png" />
+    <None Remove="Chess\AssetsSource\Assets\Board\Board.png" />
+    <None Remove="Chess\AssetsSource\Assets\Board\BoardBackground.png" />
     <None Remove="Chess\AssetsSource\Assets\WhitePieces\BishopW.png" />
     <None Remove="Chess\AssetsSource\Assets\WhitePieces\KingW.png" />
     <None Remove="Chess\AssetsSource\Assets\WhitePieces\NightW.png" />
@@ -32,7 +33,8 @@
     <Resource Include="Chess\AssetsSource\Assets\BlackPieces\PawnB.png" />
     <Resource Include="Chess\AssetsSource\Assets\BlackPieces\QueenB.png" />
     <Resource Include="Chess\AssetsSource\Assets\BlackPieces\RookB.png" />
-    <Resource Include="Chess\AssetsSource\Assets\Board.png" />
+    <Resource Include="Chess\AssetsSource\Assets\Board\Board.png" />
+    <Resource Include="Chess\AssetsSource\Assets\Board\BoardBackground.png" />
     <Resource Include="Chess\AssetsSource\Assets\WhitePieces\BishopW.png" />
     <Resource Include="Chess\AssetsSource\Assets\WhitePieces\KingW.png" />
     <Resource Include="Chess\AssetsSource\Assets\WhitePieces\NightW.png" />

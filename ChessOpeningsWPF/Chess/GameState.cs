@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace ChessOpeningsWPF.Chess
 {
-
+    public delegate void OnMovePiece(IMove move);
     public class GameState
     {
         public BoardModel Board { get; private set; }
@@ -21,6 +21,10 @@ namespace ChessOpeningsWPF.Chess
         private List<string> _stateHistory = new List<string>();
 
         private ComputerPlayer _computerPlayer;
+
+        private Stack<BoardModel> boards = new Stack<BoardModel>();
+
+        public static event OnMovePiece MovePiece;
 
         public GameState(PlayerColor playerColor, BoardModel board)
         {
@@ -47,21 +51,33 @@ namespace ChessOpeningsWPF.Chess
         {
 
             Board.SetPawnSkipedPosition(CurrentTurn, null);
-
+            boards.Push(Board.Copy());
             var moveToPositions = move.MoveTo(Board );
-
+        
             CurrentTurn = ChangeTurn();
           
             UpdateStateString();
-
-            CheckGameOver();
-
+            /*
+                        CheckGameOver();
+            */
+            MovePiece.Invoke(move);
+           
             return moveToPositions;
+        }
+
+
+        public void UndoMove(IMove move)
+        {
+            CurrentTurn = ChangeTurn();
+            if (boards.Count > 0)
+                Board = boards.Pop();
+            MovePiece.Invoke(move);
+
         }
 
         public IMove MakeComputerMove()
         {
-            return _computerPlayer.GetbestMove(this);
+            return _computerPlayer.GetBestMove(this);
         }
 
         private void CheckGameOver() 

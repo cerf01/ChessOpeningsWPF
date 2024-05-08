@@ -72,5 +72,8 @@ namespace ChessOpeningsWPF.Chess.Pieces
                board[m.To] is not null &&
                board[m.To].Type == PieceType.King
            );
+
+        public bool CanCaptureEnemy(Position position, BoardModel board) =>
+           GetMoves(position, board).Any(m => board[m.To] is not null);
     }
 }

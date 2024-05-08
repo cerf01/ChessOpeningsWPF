@@ -22,5 +22,7 @@ namespace ChessOpeningsWPF.Chess.Abstractions.Interfaces
         public List<IMove> GetMoves(Position currPosition, BoardModel board);
 
         public bool CanCaptureEnemyKing(Position position, BoardModel board);
+
+        public bool CanCaptureEnemy(Position position, BoardModel board);
     }
 }

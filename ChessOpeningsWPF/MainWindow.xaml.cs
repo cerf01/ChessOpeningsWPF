@@ -44,7 +44,7 @@ namespace ChessOpeningsWPF
         private Dictionary<Position, IMove> _movesCache = new Dictionary<Position, IMove>();
 
         private GameState _gameState;
-       
+
         private SoundPlayer _soundPlayer = new SoundPlayer(System.IO.Path.GetFullPath("../../../Chess/AssetsSource/SoundAssets/MovePieceSound.wav"));
 
         private Position _selectedPosition;
@@ -69,6 +69,8 @@ namespace ChessOpeningsWPF
 
             InitialBoard();
 
+            InitButtons();
+
             _gameState = new GameState(PlayerColor.White, BoardModel.InitialBoard(_stardedFEN));
 
             DrawPieces(_gameState.Board);
@@ -81,6 +83,15 @@ namespace ChessOpeningsWPF
 
             _onMove += OnMove;
 
+            GameState.MovePiece += GameState_MovePiece;
+
+
+        }
+
+        private void GameState_MovePiece(IMove move)
+        {
+            DrawPiece(_gameState.Board[move.From], move.From.Row, move.From.Column);
+            DrawPiece(_gameState.Board[move.To], move.To.Row, move.To.Column);
         }
 
         private void OnMove(SoundPlayer sound)
@@ -88,7 +99,7 @@ namespace ChessOpeningsWPF
             sound.Play();
         }
 
-        private void OnFromPositionSelect (Position position)
+        private void OnFromPositionSelect(Position position)
         {
             if (_gameState.Board[position] is null)
                 return;
@@ -108,11 +119,11 @@ namespace ChessOpeningsWPF
             _selectedPosition = null;
             HideHighlights();
 
-            if (_movesCache.TryGetValue(position, out IMove move)) 
+            if (_movesCache.TryGetValue(position, out IMove move))
                 HandelMove(move);
+        }
 
-
-        private void InitButtons() 
+        private void InitButtons()
         {
             foreach (var opening in ChessOpeningsList.ChessOpenings)
             {
@@ -157,7 +168,7 @@ namespace ChessOpeningsWPF
         }
 
         private void DrawPiece(IPiece? piece, int r, int c) =>
-            _piecesAssets[r][c].Source = piece is null? new BitmapImage() : AssetsLoader.GetAsset(piece.Color, piece.Type);
+            _piecesAssets[r][c].Source = piece is null ? new BitmapImage() : AssetsLoader.GetAsset(piece.Color, piece.Type);
 
         public void HandelMove(IMove move)
         {
@@ -168,7 +179,7 @@ namespace ChessOpeningsWPF
 
             foreach (var position in moveToPositions)
                 DrawPiece(_gameState.Board[position.Row, position.Column], position.Row, position.Column);
-          
+
             _onMove.Invoke(_soundPlayer);
         }
 
@@ -193,7 +204,7 @@ namespace ChessOpeningsWPF
             }
         }
 
-        private void ShowHighlights() 
+        private void ShowHighlights()
         {
             Color color = Color.FromArgb(150, 125, 255, 125);
             foreach (var position in _movesCache.Keys)
@@ -204,11 +215,11 @@ namespace ChessOpeningsWPF
 
         private void HideHighlights()
         {
-            foreach (var position in _movesCache.Keys)            
-                _highlightsRectangles[position.Row][position.Column].Fill = Brushes.Transparent;           
+            foreach (var position in _movesCache.Keys)
+                _highlightsRectangles[position.Row][position.Column].Fill = Brushes.Transparent;
         }
 
-        private Position GetSquarePosition(Point point) 
+        private Position GetSquarePosition(Point point)
         {
             double squareSize = BoardSquare.ActualWidth / 8;
 
@@ -224,37 +235,40 @@ namespace ChessOpeningsWPF
 
             var position = GetSquarePosition(point);
 
-            if(_selectedPosition is null)
+            if (_selectedPosition is null)
                 _onFromPositionSelect.Invoke(position);
             else
                 _onToPositionSelect.Invoke(position);
             await Task.Delay(200);
             if (_gameState.CurrentTurn != _gameState.Player)
                 HandelMove(_gameState.MakeComputerMove());
-                
-        private void TryToReload() 
-        {
-            if (_isUsed)
-            {
-                _board = BoardModel.InitialBoard();
-                DrawPieces(_board);
-            }
-            else
-                _isUsed = true;
         }
+
+        /*                private void TryToReload()
+                        {
+                            if (_isUsed)
+                            {
+                                _gameState.Board =  BoardModel.InitialBoard();
+                                DrawPieces(_board);
+                            }
+                            else
+                                _isUsed = true;
+                        }*/
 
 
         public async Task HandelMoves(List<IMove> moves)
         {
-            TryToReload();
+            /*  TryToReload();*/
 
-            await Task.Delay(500);    
-            
+            await Task.Delay(500);
+
             foreach (var move in moves)
             {
+                await Task.Delay(500);
                 HandelMove(move);
-            }     
-            
+            }
+
         }
+
     }
-}
+} 

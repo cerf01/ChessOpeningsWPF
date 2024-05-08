@@ -32,21 +32,21 @@ namespace ChessOpeningsWPF.Chess.Pieces
 
         public int Value => 900;
 
-        public Queen(PlayerColor color, Position position) 
-         {
-                Color = color;
-                Position = position;
-            }
+        public Queen(PlayerColor color, Position position)
+        {
+            Color = color;
+            Position = position;
+        }
 
-    public Queen(Queen queen)
+        public Queen(Queen queen)
         {
             Color = queen.Color;
             HasMoved = queen.HasMoved;
-            Position =  queen.Position;
-
+            Position = queen.Position;
+        }
         public IPiece Copy() =>
           new Queen(this);
-      
+
         public List<Position> MovePositions(Position currPosition, Direction direction, BoardModel board)
         {
             var movePositions = new List<Position>();
@@ -66,7 +66,7 @@ namespace ChessOpeningsWPF.Chess.Pieces
         }
 
         public List<Position> MoveDirections(Position currPosition, List<Direction> directions, BoardModel board) =>
-            directions.SelectMany(d => 
+            directions.SelectMany(d =>
                     MovePositions(currPosition, d, board))
                 .ToList();
 
@@ -80,5 +80,9 @@ namespace ChessOpeningsWPF.Chess.Pieces
                board[m.To] is not null &&
                board[m.To].Type == PieceType.King
            );
+
+        public bool CanCaptureEnemy(Position position, BoardModel board) =>
+           GetMoves(position, board).Any(m => board[m.To] is not null);
+
     }
 }

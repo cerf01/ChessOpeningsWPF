@@ -39,7 +39,7 @@ namespace ChessOpeningsWPF.Chess.Pieces
             Position = position;
         }
 
-    public King(King king)
+        public King(King king)
         {
             Color = king.Color;
             HasMoved = king.HasMoved;
@@ -50,25 +50,25 @@ namespace ChessOpeningsWPF.Chess.Pieces
         public IPiece Copy() =>
           new King(this);
 
-        private bool IsRookMoved(Position position, BoardModel board) 
+        private bool IsRookMoved(Position position, BoardModel board)
         {
-           if(board.IsEmptySquare(position))
+            if (board.IsEmptySquare(position))
                 return true;
 
-           return (board[position].Type == PieceType.Rook && board[position].HasMoved);
+            return (board[position].Type == PieceType.Rook && board[position].HasMoved);
         }
 
         private bool IsPathClear(List<Position> positions, BoardModel board) =>
             positions.All(p => board.IsEmptySquare(p));
-        
-        private bool IsRightCastlingPossible(Position position, BoardModel board) 
+
+        private bool IsRightCastlingPossible(Position position, BoardModel board)
         {
             if (HasMoved)
                 return false;
-            var positions = new List<Position>() 
-            { 
-                new Position(position.Row, 5), 
-                new Position(position.Row, 6) 
+            var positions = new List<Position>()
+            {
+                new Position(position.Row, 5),
+                new Position(position.Row, 6)
             };
 
             return IsPathClear(positions, board) && !IsRookMoved(new Position(position.Row, 7), board); ;
@@ -79,11 +79,11 @@ namespace ChessOpeningsWPF.Chess.Pieces
             if (HasMoved)
                 return false;
 
-            var positions = new List<Position>() 
+            var positions = new List<Position>()
             {
-                new Position(position.Row, 1), 
-                new Position(position.Row, 2), 
-                new Position(position.Row, 3) 
+                new Position(position.Row, 1),
+                new Position(position.Row, 2),
+                new Position(position.Row, 3)
             };
 
             return IsPathClear(positions, board) && !IsRookMoved(new Position(position.Row, 0), board);
@@ -107,16 +107,25 @@ namespace ChessOpeningsWPF.Chess.Pieces
             return movePositions;
         }
 
-        public List<IMove> GetMoves(Position currPosition, BoardModel board) =>
-           MovesPositions(currPosition, board)
-                .Select(p => 
-                    (IMove)new NormalMove(currPosition, p))
-                .ToList();
+        public List<IMove> GetMoves(Position currPosition, BoardModel board)
+        {
+          var moves = MovesPositions(currPosition, board)
+               .Select(p =>
+                   (IMove)new NormalMove(currPosition, p))
+               .ToList();
+            if (IsLeftCastlingPossible(currPosition, board))
+                moves.Add(new Castling(MoveType.CastleL, currPosition));
+            if (IsRightCastlingPossible(currPosition, board))
+                moves.Add(new Castling(MoveType.CastleR, currPosition));
 
+            return moves;
+        }
         public bool CanCaptureEnemyKing(Position position, BoardModel board) =>
             MovesPositions(position, board).Any(p =>
                 board[p] is not null &&
                 board[p].Type == PieceType.King
             );
+        public bool CanCaptureEnemy(Position position, BoardModel board) =>
+            MovesPositions(position, board).Any(p => board[p] is not null);
     }
 }

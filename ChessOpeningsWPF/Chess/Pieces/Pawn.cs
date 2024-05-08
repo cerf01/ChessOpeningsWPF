@@ -90,13 +90,14 @@ namespace ChessOpeningsWPF.Chess.Pieces
             var oneMove = currPosition + _forward;
 
             if (CanMoveTo(oneMove, board))
+            {
                 moves = TryToPromote(currPosition, oneMove);
 
-            var twoMove = oneMove + _forward;
+                var twoMove = oneMove + _forward;
 
-            if (!HasMoved && CanMoveTo(twoMove, board))
-                moves.Add(new DoubleMove(currPosition, twoMove));
-
+                if (!HasMoved && CanMoveTo(twoMove, board))
+                    moves.Add(new DoubleMove(currPosition, twoMove));
+            }
             return moves;
         }
 
@@ -105,13 +106,18 @@ namespace ChessOpeningsWPF.Chess.Pieces
             var moves = new List<IMove>();
 
             Position toPosition = null;
-            
-            
+
             for (int i = 2; i < _directions.Count; i++)
             {
                 toPosition = currPosition + _forward + _directions[i];
-                if (CanCaptureAt(toPosition, board))
+                if (toPosition == board.GetPawnSkipedPositions(board[currPosition].Color == PlayerColor.White ? PlayerColor.Black : PlayerColor.White))
+                    moves.Add(new EnPassant(currPosition, toPosition));
+
+                else if (CanCaptureAt(toPosition, board))
+                {
                     moves.Add(new NormalMove(currPosition, toPosition));
+                    moves.AddRange(TryToPromote(currPosition, toPosition));
+                }
             }
 
             return moves;
@@ -127,5 +133,8 @@ namespace ChessOpeningsWPF.Chess.Pieces
                 board[m.To] is not null && 
                 board[m.To].Type == PieceType.King
             );
+
+        public bool CanCaptureEnemy(Position position, BoardModel board) =>
+           GetMoves(position, board).Any(m => board[m.To] is not null);
     }
 }
