@@ -172,7 +172,7 @@ namespace ChessOpeningsWPF.Chess.SortOfChessAI
 
                 var moves = board.AllLegalPlayerMoves(PlayerColor.Black);
 
-                int evaluation = -Infitity;
+                int evaluation = 0;
 
                 OrderMoves(moves, board);
                 foreach (var move in moves)
@@ -200,7 +200,7 @@ namespace ChessOpeningsWPF.Chess.SortOfChessAI
 
                 var moves = board.AllLegalPlayerMoves(PlayerColor.White);
 
-                int evaluation = -Infitity;
+                int evaluation = 0;
 
                 OrderMoves(moves, board);
                 foreach (var move in moves)
@@ -221,8 +221,6 @@ namespace ChessOpeningsWPF.Chess.SortOfChessAI
                 }
                 return bestValue;
             }
-            
-
 
         }
 

@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChessOpeningsWPF"
         mc:Ignorable="d"
-        Title="Chess Openings" Height="800" Width="950" 
+        Title="Chess Openings" Height="800" Width="900" 
         ResizeMode="NoResize" 
         WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5*"/>
-            <ColumnDefinition Width= "700"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width= "auto"/>
         </Grid.ColumnDefinitions>
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -21,38 +21,43 @@
         </ScrollViewer>
         
         <Grid Grid.Column="1" x:Name="BoardGrid">
+            <Grid.Background>
+                <ImageBrush ImageSource="\Chess\AssetsSource\Assets\Board\BoardBackground.png"/>
+            </Grid.Background>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
 
             <Border BorderBrush="Black" BorderThickness="10" Grid.Row="1" Grid.Column ="1"  Grid.ColumnSpan="8" Grid.RowSpan="8">
               <Grid  x:Name="BoardSquare" MouseDown="Border_MouseDown"  Height="600" Width="600">
                     <Grid.Background>
-                        <ImageBrush ImageSource="\Chess\AssetsSource\Assets\Board.png"/>
+                        <ImageBrush ImageSource="\Chess\AssetsSource\Assets\Board\Board.png"/>
                     </Grid.Background>
+                    <UniformGrid x:Name="Highlight" Rows="8" Columns="8">
 
+                    </UniformGrid>
                     <UniformGrid x:Name="GameBoard" Rows="8" Columns="8" RenderOptions.BitmapScalingMode="HighQuality">
 
                     </UniformGrid>
