@@ -9,7 +9,7 @@ namespace ChessOpeningsWPF.Chess.Pieces
 {
     public class Knight : IPiece
     {
-        public PieceType Type => PieceType.Knight;
+        public PieceType Type => PieceType.Night;
 
         public PlayerColor Color { get; }
 

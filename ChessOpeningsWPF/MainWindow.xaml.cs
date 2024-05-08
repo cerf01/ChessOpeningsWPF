@@ -14,8 +14,7 @@ using System.Windows.Input;
 using ChessOpeningsWPF.Chess;
 using ChessOpeningsWPF.Chess.Abstractions.Enums;
 using System.Linq;
-using System;
-using ChessOpeningsWPF.Chess.SortOfChessAI;
+
 
 namespace ChessOpeningsWPF
 {
@@ -27,6 +26,8 @@ namespace ChessOpeningsWPF
     public delegate void OnPositionSelect(Position position);
 
     public delegate void OnMove(SoundPlayer sound);
+
+
 
     public partial class MainWindow : Window
     {
@@ -50,6 +51,11 @@ namespace ChessOpeningsWPF
 
         private event OnMove _onMove;
 
+        private string _stardedFEN => "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq";
+
+
+        public MainWindow MainApp { get => this; }
+
         public MainWindow()
         {
 
@@ -57,7 +63,7 @@ namespace ChessOpeningsWPF
 
             InitialBoard();
 
-            _gameState = new GameState(PlayerColor.White, BoardModel.InitialBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq"));
+            _gameState = new GameState(PlayerColor.White, BoardModel.InitialBoard(_stardedFEN));
 
             DrawPieces(_gameState.Board);
 
@@ -68,6 +74,7 @@ namespace ChessOpeningsWPF
             _onToPositionSelect += OnToPositionSelect;
 
             _onMove += OnMove;
+
         }
 
         private void OnMove(SoundPlayer sound)
@@ -80,7 +87,7 @@ namespace ChessOpeningsWPF
             if (_gameState.Board[position] is null)
                 return;
 
-            var moves = _gameState.AvailableMovesForPiece(position);
+            var moves = _gameState.Board.AvailableMovesForPiece(position, _gameState.CurrentTurn);
 
             if (moves.Any())
             {
@@ -148,7 +155,7 @@ namespace ChessOpeningsWPF
         {           
             if (_isUsed)
             {
-                _gameState = new GameState(PlayerColor.White, BoardModel.InitialBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq"));
+                _gameState = new GameState(PlayerColor.White, BoardModel.InitialBoard(_stardedFEN));
 
                 DrawPieces(_gameState.Board);
             }
@@ -269,7 +276,7 @@ namespace ChessOpeningsWPF
             return new Position(row, col);
         }
 
-        private void Border_MouseDown(object sender, MouseButtonEventArgs e)
+        private async void Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Point point = e.GetPosition(BoardSquare);
 
@@ -279,11 +286,9 @@ namespace ChessOpeningsWPF
                 _onFromPositionSelect.Invoke(position);
             else
                 _onToPositionSelect.Invoke(position);
-
+            await Task.Delay(200);
             if (_gameState.CurrentTurn != _gameState.Player)
                 HandelMove(_gameState.MakeComputerMove());
-
-
         }
     }
 }

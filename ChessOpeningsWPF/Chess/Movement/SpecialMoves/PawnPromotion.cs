@@ -27,7 +27,7 @@ namespace ChessOpeningsWPF.Chess.Movement.SpecialMoves
         {
             switch (_newPieceType)
             {
-                case PieceType.Knight:
+                case PieceType.Night:
                     return new Knight(color, To);
                 case PieceType.Bishop:
                     return new Bishop(color, To);

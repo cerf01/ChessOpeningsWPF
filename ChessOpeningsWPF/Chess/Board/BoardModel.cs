@@ -6,6 +6,7 @@ using ChessOpeningsWPF.Chess.Pieces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace ChessOpeningsWPF.Chess.Board
 {
@@ -13,14 +14,16 @@ namespace ChessOpeningsWPF.Chess.Board
     {
         private List<List<IPiece>> _squares = new List<List<IPiece>>();
 
-        private Dictionary<PlayerColor, Position> _pawnSkiped = new Dictionary<PlayerColor, Position>()
+    private Dictionary<PlayerColor, Position> _pawnSkiped = new Dictionary<PlayerColor, Position>()
         {
             {PlayerColor.White, null},
             {PlayerColor.Black, null}
         };
 
+
         public BoardModel()
         {
+
             InitSquares();
         }
 
@@ -30,8 +33,9 @@ namespace ChessOpeningsWPF.Chess.Board
             {
                 _squares.Add(new List<IPiece>());
                 for (int c = 0; c < 8; c++)
+                {
                     _squares[r].Add(null);
-
+                }
             }
         }
 
@@ -75,6 +79,9 @@ namespace ChessOpeningsWPF.Chess.Board
             int rank = 0;
             int file = 0;
 
+            _squares.Clear();
+            InitSquares();
+
             foreach (var symbol in str)
             {
                 if (symbol == '/')
@@ -91,11 +98,42 @@ namespace ChessOpeningsWPF.Chess.Board
                     {
                         var pieceColor = char.IsLower(symbol) ? PlayerColor.Black : PlayerColor.White;
                         _squares[rank][file] = GetPieceFormChar(char.ToLower(symbol), pieceColor, rank, file);
+
                         file++;
                     }
                 }
             }
         }
+
+        public bool PawnPromoted(Position position)
+        {
+
+            if (this[position].Type == PieceType.Pawn)
+            {
+                if(this[position].Color == PlayerColor.White && position.Row == 0 || this[position].Color == PlayerColor.Black && position.Row == 7)
+                this[position] = new Queen(this[position].Color, this[position].Position);                
+                return true;
+            }
+
+            return false;
+        }
+
+        public List<IMove> AvailableMovesForPiece(Position position, PlayerColor currentTurn)
+        {
+            if (!IsInsideBoard(position) || this[position].Color != currentTurn)
+                return new List<IMove>();
+
+            var possibleMoves = this[position].GetMoves(position, this);
+
+            return possibleMoves.Where(m => m.IsLegal(this)).ToList();
+        }
+
+        public List<IMove> AllLegalPlayerMoves(PlayerColor color) =>
+            PiecePositionsByColor(color)
+               .SelectMany(p =>
+                   this[p].GetMoves(p, this))
+               .Where(m => m.IsLegal(this))
+               .ToList();
 
         public static BoardModel InitialBoard(string fenString)
         {
@@ -205,5 +243,6 @@ namespace ChessOpeningsWPF.Chess.Board
             return HasPawnInPosition(color, pawnPositions, skipedPositions);
 
         }
+
     }
 }

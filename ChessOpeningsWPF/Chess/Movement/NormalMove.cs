@@ -1,6 +1,7 @@
 ﻿using ChessOpeningsWPF.Chess.Abstractions.Enums;
 using ChessOpeningsWPF.Chess.Abstractions.Interfaces;
 using ChessOpeningsWPF.Chess.Board;
+using ChessOpeningsWPF.Chess.Pieces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,13 +29,14 @@ namespace ChessOpeningsWPF.Chess.Movement
             if (piece is null)
                 return null;
 
-            board[To] = piece;
+           
             board[From] = null;
 
+            board[To] = piece;
             piece.Position = To;
 
             piece.HasMoved = true;
-
+            
             return new List<Position>() { From, To };
         }
 
@@ -45,6 +47,7 @@ namespace ChessOpeningsWPF.Chess.Movement
             var boardCopy = board.Copy();
 
             MoveTo(boardCopy);
+           
             
             return !boardCopy.IsInCheck(color);
         }

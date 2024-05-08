@@ -30,6 +30,11 @@ namespace ChessOpeningsWPF.Chess.Movement
                    Column == position.Column;
         }
 
+        public override string ToString()
+        {
+            return $"{Row} {Column}";
+        }
+
         public override int GetHashCode() =>
             HashCode.Combine(Row, Column);
         
