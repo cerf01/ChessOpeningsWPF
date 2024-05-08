@@ -33,6 +33,7 @@ namespace ChessOpeningsWPF.Chess.Pieces
             Color = color;
             Position = position;
         }
+
         public Rook(Rook rook)
         {
             Color = rook.Color;
@@ -42,7 +43,6 @@ namespace ChessOpeningsWPF.Chess.Pieces
 
         public IPiece Copy() =>
           new Rook(this);
-
 
         public List<IMove> GetMoves(Position currPosition, BoardModel board) =>
             MoveDirections(currPosition, _directions, board)

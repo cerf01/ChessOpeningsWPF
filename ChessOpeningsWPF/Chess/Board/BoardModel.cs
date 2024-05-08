@@ -243,6 +243,5 @@ namespace ChessOpeningsWPF.Chess.Board
             return HasPawnInPosition(color, pawnPositions, skipedPositions);
 
         }
-
     }
 }

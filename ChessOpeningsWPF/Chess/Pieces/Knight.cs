@@ -5,16 +5,14 @@ using ChessOpeningsWPF.Chess.Movement;
 using System.Collections.Generic;
 using System.Linq;
 
+
 namespace ChessOpeningsWPF.Chess.Pieces
 {
     public class Knight : IPiece
     {
         public PieceType Type => PieceType.Night;
-
         public PlayerColor Color { get; }
-
         public bool HasMoved { get; set; } = false;
-
         private static List<Direction> _directions = new List<Direction>()
         {
             Movement.Directions.South,
@@ -22,27 +20,27 @@ namespace ChessOpeningsWPF.Chess.Pieces
             Movement.Directions.West,
             Movement.Directions.East,
         };
-
         public List<Direction> Directions { get => _directions; }
         public Position Position { get; set; }
-
         public int Value => 320;
-
+        
         public Knight(PlayerColor color, Position position)
         {
             Color = color;
             Position = position;
         }
-
+        
         public Knight(Knight knight)
         {
             Color = knight.Color;
             HasMoved = knight.HasMoved;
             Position = knight.Position;
+
         }
 
         public IPiece Copy() =>
           new Knight(this);
+
 
         private static List<Position> PossiblePositions(Position currPosition) 
         {

@@ -43,7 +43,6 @@ namespace ChessOpeningsWPF.Chess.Pieces
             Color = queen.Color;
             HasMoved = queen.HasMoved;
             Position =  queen.Position;
-        }
 
         public IPiece Copy() =>
           new Queen(this);

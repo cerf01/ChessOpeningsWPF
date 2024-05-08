@@ -6,6 +6,7 @@ using ChessOpeningsWPF.Chess.Movement.SpecialMoves;
 using System.Collections.Generic;
 using System.Linq;
 
+
 namespace ChessOpeningsWPF.Chess.Pieces
 {
     public class King : IPiece
@@ -43,6 +44,7 @@ namespace ChessOpeningsWPF.Chess.Pieces
             Color = king.Color;
             HasMoved = king.HasMoved;
             Position = king.Position;
+
         }
 
         public IPiece Copy() =>
@@ -116,7 +118,5 @@ namespace ChessOpeningsWPF.Chess.Pieces
                 board[p] is not null &&
                 board[p].Type == PieceType.King
             );
-
-
     }
 }

@@ -7,16 +7,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 
+
 namespace ChessOpeningsWPF.Chess.Pieces
 {
     public class Pawn : IPiece
     {
         public PieceType Type => PieceType.Pawn;
-
         public PlayerColor Color { get; }
-
         public bool HasMoved { get; set; } = false;
-
         private List<Direction> _directions => new List<Direction>()
         {
             Movement.Directions.North,
@@ -24,13 +22,10 @@ namespace ChessOpeningsWPF.Chess.Pieces
             Movement.Directions.East,
             Movement.Directions.West,
         };
-
         public List<Direction> Directions { get => _directions; }
         public Position Position { get; set; }
-
         public int Value => 100;
-
-        private readonly Direction _forward;
+        private readonly Direction _forward;      
 
         public Pawn(PlayerColor color, Position position)
         {
@@ -40,6 +35,7 @@ namespace ChessOpeningsWPF.Chess.Pieces
 
             _forward = Color == PlayerColor.White ? _directions[0] : _directions[1];
         }
+        
         public Pawn(Pawn pawn)
         {
             Color = pawn.Color;
@@ -49,10 +45,11 @@ namespace ChessOpeningsWPF.Chess.Pieces
             HasMoved = pawn.HasMoved;
 
             Position = pawn.Position;
-        }
-
+         }
+         
         public IPiece Copy() =>
           new Pawn(this);
+
 
         private bool CanMoveTo(Position position, BoardModel board) =>
             BoardModel.IsInsideBoard(position) && board.IsEmptySquare(position);
@@ -130,6 +127,5 @@ namespace ChessOpeningsWPF.Chess.Pieces
                 board[m.To] is not null && 
                 board[m.To].Type == PieceType.King
             );
-          
     }
 }

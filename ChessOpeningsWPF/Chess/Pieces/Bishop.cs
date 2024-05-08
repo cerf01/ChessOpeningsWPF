@@ -33,11 +33,13 @@ namespace ChessOpeningsWPF.Chess.Pieces
                 Color = color;
                 Position = position;
             }
+
         public Bishop(Bishop bishop)
         {
             Color = bishop.Color;
             HasMoved = bishop.HasMoved;
             Position = bishop.Position;
+
         }
 
         public IPiece Copy() =>

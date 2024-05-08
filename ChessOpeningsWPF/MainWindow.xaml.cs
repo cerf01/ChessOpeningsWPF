@@ -14,6 +14,13 @@ using System.Windows.Input;
 using ChessOpeningsWPF.Chess;
 using ChessOpeningsWPF.Chess.Abstractions.Enums;
 using System.Linq;
+using System.Windows.Media;
+using System;
+using System.IO;
+using ChessOpeningsWPF.Chess.AssetsSource;
+using ChessOpeningsWPF.Chess.Openings;
+using ChessOpeningsWPF.Controls;
+using System.Windows.Input;
 
 
 namespace ChessOpeningsWPF
@@ -21,7 +28,6 @@ namespace ChessOpeningsWPF
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    /// 
 
     public delegate void OnPositionSelect(Position position);
 
@@ -104,6 +110,27 @@ namespace ChessOpeningsWPF
 
             if (_movesCache.TryGetValue(position, out IMove move)) 
                 HandelMove(move);
+
+
+        private void InitButtons() 
+        {
+            foreach (var opening in ChessOpeningsList.ChessOpenings)
+            {
+                var button = new OpeningButton(opening);
+                button.OnClick += Button_OnClick;
+                OpeningsButtons.Children.Add(button);
+            }
+        }
+
+        private async Task Button_OnClick(List<IMove> moves)
+        {
+            OpeningsButtons.IsEnabled = false;
+            Mouse.OverrideCursor = Cursors.Wait;
+
+            await HandelMoves(moves);
+
+            Mouse.OverrideCursor = Cursors.Arrow;
+            OpeningsButtons.IsEnabled = true;
         }
 
         private void InitialBoard()
@@ -141,35 +168,8 @@ namespace ChessOpeningsWPF
 
             foreach (var position in moveToPositions)
                 DrawPiece(_gameState.Board[position.Row, position.Column], position.Row, position.Column);
-
-            RowValue.Text = $"{moveToPositions[0].Row}";
-            ColumnValue.Text = $"{moveToPositions[0].Column}";
-
-            ToRowValue.Text = $"{moveToPositions[1].Row}";
-            ToColumnValue.Text = $"{moveToPositions[1].Column}";
           
             _onMove.Invoke(_soundPlayer);
-        }
-
-        public async Task HandelMoves(List<IMove> moves)
-        {           
-            if (_isUsed)
-            {
-                _gameState = new GameState(PlayerColor.White, BoardModel.InitialBoard(_stardedFEN));
-
-                DrawPieces(_gameState.Board);
-            }
-
-            await Task.Delay(500);
-            
-            foreach (var move in moves)
-            {
-                HandelMove(move);
-
-                 await Task.Delay(1000);
-            }
-
-            _isUsed = true;
         }
 
         private void DrawPieces(BoardModel board)
@@ -208,64 +208,6 @@ namespace ChessOpeningsWPF
                 _highlightsRectangles[position.Row][position.Column].Fill = Brushes.Transparent;           
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
-        {
-            var btn = sender as Button;
-
-            List<IMove> moves = null;
-
-            switch (btn.Name)
-            {
-                case "opennding1":
-                    {
-                        moves = new List<IMove>()
-                        {
-                             new NormalMove(new Position(6, 6), new Position(5,6))
-                        };
-                    }
-                    break;
-                case "opennding2":
-                    {
-                        moves = new List<IMove>()
-                        {
-                              new NormalMove(new Position(6, 3), new Position(4,3))
-                        };                   
-                    }
-                    break;
-
-                case "opennding3":
-                    {
-                        moves = new List<IMove>()
-                        {
-                              new NormalMove(new Position(6, 4), new Position(4,4)),
-                               new NormalMove(new Position(1, 1), new Position(3,1)),
-                        };
-                    }
-                    break;
-
-                case "opennding4":
-                    {
-                        moves = new List<IMove>()
-                        {
-                            new NormalMove(new Position(6, 1), new Position(5,1)),
-                            new NormalMove(new Position(1, 1), new Position(3,1)),
-                              new NormalMove(new Position(6, 3), new Position(4,3))
-                        };
-                    }
-                    break;
-                default:
-                    {
-                        moves = new List<IMove>()
-                        {
-                            new NormalMove(new Position(0, 0), new Position(0,0))
-                        };
-                    }break;
-            }
-            
-            await HandelMoves(moves);
-
-        }
-
         private Position GetSquarePosition(Point point) 
         {
             double squareSize = BoardSquare.ActualWidth / 8;
@@ -289,6 +231,30 @@ namespace ChessOpeningsWPF
             await Task.Delay(200);
             if (_gameState.CurrentTurn != _gameState.Player)
                 HandelMove(_gameState.MakeComputerMove());
+                
+        private void TryToReload() 
+        {
+            if (_isUsed)
+            {
+                _board = BoardModel.InitialBoard();
+                DrawPieces(_board);
+            }
+            else
+                _isUsed = true;
+        }
+
+
+        public async Task HandelMoves(List<IMove> moves)
+        {
+            TryToReload();
+
+            await Task.Delay(500);    
+            
+            foreach (var move in moves)
+            {
+                HandelMove(move);
+            }     
+            
         }
     }
 }

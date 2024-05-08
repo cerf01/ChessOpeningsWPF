@@ -9,6 +9,7 @@ namespace ChessOpeningsWPF.Chess.AssetsSource
     public static class AssetsLoader
     {
         private static ImageSource LoadSource(string path) =>
+
            new BitmapImage(new Uri(path, UriKind.Relative));
 
         private static ImageSource SetWhitePiece(PieceType type) =>
@@ -19,5 +20,6 @@ namespace ChessOpeningsWPF.Chess.AssetsSource
 
         public static ImageSource GetAsset(PlayerColor color, PieceType type) =>
             color == PlayerColor.White ? SetWhitePiece(type) : SetBlackPiece(type);
+
     }
 }
