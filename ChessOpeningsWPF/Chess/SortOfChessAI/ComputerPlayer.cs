@@ -214,6 +214,7 @@ namespace ChessOpeningsWPF.Chess.SortOfChessAI
 
             return (whitePieces - blackPieces) * perspective;
         }
+    
 
         private int GetBestPosition(IPiece piece, Position square)
         {
