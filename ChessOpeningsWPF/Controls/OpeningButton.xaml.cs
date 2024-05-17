@@ -34,8 +34,6 @@ namespace ChessOpeningsWPF.Controls
 
             lightEnterBrush = new SolidColorBrush(Color.FromRgb(0xF0, 0xF0, 0xF0));
 
-            ContentBorder.Background
-
             _isHovered = false;
 
         }
