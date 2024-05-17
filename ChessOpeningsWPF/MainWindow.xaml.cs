@@ -14,13 +14,8 @@ using System.Windows.Input;
 using ChessOpeningsWPF.Chess;
 using ChessOpeningsWPF.Chess.Abstractions.Enums;
 using System.Linq;
-using System.Windows.Media;
-using System;
-using System.IO;
-using ChessOpeningsWPF.Chess.AssetsSource;
 using ChessOpeningsWPF.Chess.Openings;
 using ChessOpeningsWPF.Controls;
-using System.Windows.Input;
 
 
 namespace ChessOpeningsWPF
@@ -129,7 +124,9 @@ namespace ChessOpeningsWPF
             {
                 var button = new OpeningButton(opening);
                 button.OnClick += Button_OnClick;
+                button.BgBrush.Background = ChessOpeningsList.ChessOpenings.IndexOf(opening) % 2 == 0 ? new SolidColorBrush(Color.FromRgb(0xf7, 0xd1, 0x9e)) : new SolidColorBrush(Color.FromRgb(0x76, 0x26, 0x02));
                 OpeningsButtons.Children.Add(button);
+               
             }
         }
 

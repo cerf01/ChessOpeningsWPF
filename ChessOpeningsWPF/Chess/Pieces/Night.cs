@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace ChessOpeningsWPF.Chess.Pieces
 {
-    public class Knight : IPiece
+    public class Night : IPiece
     {
         public PieceType Type => PieceType.Night;
         public PlayerColor Color { get; }
@@ -24,13 +24,13 @@ namespace ChessOpeningsWPF.Chess.Pieces
         public Position Position { get; set; }
         public int Value => 320;
         
-        public Knight(PlayerColor color, Position position)
+        public Night(PlayerColor color, Position position)
         {
             Color = color;
             Position = position;
         }
         
-        public Knight(Knight knight)
+        public Night(Night knight)
         {
             Color = knight.Color;
             HasMoved = knight.HasMoved;
@@ -39,7 +39,7 @@ namespace ChessOpeningsWPF.Chess.Pieces
         }
 
         public IPiece Copy() =>
-          new Knight(this);
+          new Night(this);
 
 
         private static List<Position> PossiblePositions(Position currPosition) 

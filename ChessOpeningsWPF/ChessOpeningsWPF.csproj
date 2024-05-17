@@ -16,7 +16,11 @@
     <None Remove="Chess\AssetsSource\Assets\BlackPieces\QueenB.png" />
     <None Remove="Chess\AssetsSource\Assets\BlackPieces\RookB.png" />
     <None Remove="Chess\AssetsSource\Assets\Board\Board.png" />
+    <None Remove="Chess\AssetsSource\Assets\Board\Board1.png" />
     <None Remove="Chess\AssetsSource\Assets\Board\BoardBackground.png" />
+    <None Remove="Chess\AssetsSource\Assets\Board\cstBoard.png" />
+    <None Remove="Chess\AssetsSource\Assets\Board\cstBoard2.png" />
+    <None Remove="Chess\AssetsSource\Assets\Board\cstBoard3.png" />
     <None Remove="Chess\AssetsSource\Assets\WhitePieces\BishopW.png" />
     <None Remove="Chess\AssetsSource\Assets\WhitePieces\KingW.png" />
     <None Remove="Chess\AssetsSource\Assets\WhitePieces\NightW.png" />
