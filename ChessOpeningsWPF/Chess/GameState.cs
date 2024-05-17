@@ -14,18 +14,22 @@ namespace ChessOpeningsWPF.Chess
     {
         public BoardModel Board { get; private set; }
         public PlayerColor CurrentTurn { get;private set; }
-        public PlayerColor Player;
+
+        public PlayerColor Player { get; private set; }
 
         private string _stateString;
 
-        private List<string> _stateHistory = new List<string>();
+        private Stack<string> _stateHistory = new Stack<string>();
+
+        private Stack<BoardModel> _boardHystory = new Stack<BoardModel>();
+
+        public Stack<IPiece> CapchuredPieces = new Stack<IPiece>();
 
         private ComputerPlayer _computerPlayer;
 
-        private Stack<BoardModel> boards = new Stack<BoardModel>();
-
         public static event OnMovePiece MovePiece;
 
+    
         public GameState(PlayerColor playerColor, BoardModel board)
         {
             Player = playerColor;
@@ -38,7 +42,7 @@ namespace ChessOpeningsWPF.Chess
 
             _stateString = new FENString(CurrentTurn, Board).ToString();
 
-            _stateHistory.Add(_stateString);
+            _stateHistory.Push(_stateString);
         }
 
         public void ResetBoard() 
@@ -51,34 +55,36 @@ namespace ChessOpeningsWPF.Chess
         {
 
             Board.SetPawnSkipedPosition(CurrentTurn, null);
-            boards.Push(Board.Copy());
-            var moveToPositions = move.MoveTo(Board );
-        
+            _boardHystory.Push(Board.Copy());
+
+            if (!Board.IsEmptySquare(move.To))
+                CapchuredPieces.Push(Board[move.To]);
+
+            var moveToPositions = move.MoveTo(Board);
+            
             CurrentTurn = ChangeTurn();
           
             UpdateStateString();
-            /*
-                        CheckGameOver();
-            */
-            MovePiece.Invoke(move);
            
             return moveToPositions;
         }
 
-
         public void UndoMove(IMove move)
         {
             CurrentTurn = ChangeTurn();
-            if (boards.Count > 0)
-                Board = boards.Pop();
-            MovePiece.Invoke(move);
+            
+            _stateHistory.Pop();
+            if(CapchuredPieces.Count > 0)
+                CapchuredPieces.Pop();            
+
+            if (_boardHystory.Count > 0)
+                Board = _boardHystory.Pop();
 
         }
 
-        public IMove MakeComputerMove()
-        {
-            return _computerPlayer.GetBestMove(this);
-        }
+        public IMove MakeComputerMove() =>
+            _computerPlayer.GetBestMove(this);
+        
 
         private void CheckGameOver() 
         {
@@ -90,7 +96,7 @@ namespace ChessOpeningsWPF.Chess
         private void UpdateStateString()
         {
             _stateString = new FENString(CurrentTurn, Board).ToString();
-            _stateHistory.Add(_stateString);
+            _stateHistory.Push(_stateString);
         }
     }
 }

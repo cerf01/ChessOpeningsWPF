@@ -14,7 +14,7 @@ namespace ChessOpeningsWPF.Chess.Board
     {
         private List<List<IPiece>> _squares = new List<List<IPiece>>();
 
-    private Dictionary<PlayerColor, Position> _pawnSkiped = new Dictionary<PlayerColor, Position>()
+        private Dictionary<PlayerColor, Position> _pawnSkiped = new Dictionary<PlayerColor, Position>()
         {
             {PlayerColor.White, null},
             {PlayerColor.Black, null}
@@ -50,7 +50,7 @@ namespace ChessOpeningsWPF.Chess.Board
             set { _squares[position.Row][position.Column] = value; }
         }
 
-        private IPiece GetPieceFormChar(char pieceChar, PlayerColor color, int rank, int file)
+        private IPiece? GetPieceFormChar(char pieceChar, PlayerColor color, int rank, int file)
         {
             switch (pieceChar)
             {
@@ -65,7 +65,7 @@ namespace ChessOpeningsWPF.Chess.Board
                 case 'k':
                     return new King(color, new Position(rank, file));
                 case 'n':
-                    return new Knight(color, new Position(rank, file));
+                    return new Night(color, new Position(rank, file));
                 default:
                     return null;
             }
@@ -97,7 +97,6 @@ namespace ChessOpeningsWPF.Chess.Board
                     {
                         var pieceColor = char.IsLower(symbol) ? PlayerColor.Black : PlayerColor.White;
                         _squares[rank][file] = GetPieceFormChar(char.ToLower(symbol), pieceColor, rank, file);
-
                         file++;
                     }
                 }
@@ -204,10 +203,12 @@ namespace ChessOpeningsWPF.Chess.Board
                     this[p]
                     .CanCaptureEnemyKing(p, this));
 
-        public bool IsInAttack(PlayerColor color, Position position) =>
-         PiecePositionsByColor(color == PlayerColor.White ? PlayerColor.Black : PlayerColor.White)
-             .Any(p => p == position  && this[p].CanCaptureEnemy(p, this));
-
+        public bool IsInAttack(PlayerColor color, Position position) 
+        { 
+         var squarsOnAttack = PiecePositionsByColor(color == PlayerColor.White ? PlayerColor.Black : PlayerColor.White)
+             .Where(p => this[p].CanCaptureEnemy(p, this));
+            return squarsOnAttack.Contains(position);
+        }
         public BoardModel Copy()
         {
             var board = new BoardModel();

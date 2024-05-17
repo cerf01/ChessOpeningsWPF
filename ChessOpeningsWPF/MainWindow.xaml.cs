@@ -129,7 +129,9 @@ namespace ChessOpeningsWPF
             {
                 var button = new OpeningButton(opening);
                 button.OnClick += Button_OnClick;
+                button.BgBrush = ChessOpeningsList.ChessOpenings.IndexOf(opening) % 2 == 0 ? new SolidColorBrush(Color.FromRgb(0xf7, 0xd1, 0x9e)) : new SolidColorBrush(Color.FromRgb(0x76, 0x26, 0x02));
                 OpeningsButtons.Children.Add(button);
+               
             }
         }
 

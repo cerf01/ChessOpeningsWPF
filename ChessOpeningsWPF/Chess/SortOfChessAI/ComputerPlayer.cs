@@ -6,21 +6,12 @@ using ChessOpeningsWPF.Chess.Pieces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Documents;
 
 namespace ChessOpeningsWPF.Chess.SortOfChessAI
 {
     public class ComputerPlayer
     {
-        public IMove bestMove = null;
-        public static int Depth { get; private set; }
-        public static int Infitity => 100000;
-
-
+       public static int Depth { get; private set; }
 
        private static int[,] bestPawnPositions = new int[,]{
             {0,  0,  0,  0,  0,  0,  0,  0},
@@ -114,28 +105,24 @@ namespace ChessOpeningsWPF.Chess.SortOfChessAI
         public static int[,] Invert(int[,] table)
         {
             int[,] ret = new int[8, 8];
+
             for (int i = 0; i <= 7; i++)
-            {
                 for (int j = 0; j <= 7; j++)
-                {
                     ret[i, j] = table[(7 - i), j];
-                }
-            }
+
             return ret;
         }
 
         public IMove GetBestMove(GameState state)
         {
-  
             var possibleMoves = state.Board.AllLegalPlayerMoves(state.CurrentTurn);
 
-            SerchBestMove(state, 4, int.MinValue, int.MaxValue); 
+            SerchBestMove(state, Depth, int.MinValue, int.MaxValue); 
 
             OrderMoves(possibleMoves, state);
-            var index = 0;
-            var q = possibleMoves.Count;
-            var bestMove = possibleMoves[index];
-            var w = state.Board[bestMove.To];
+
+            var bestMove = possibleMoves.First();
+
             return bestMove;
         }
 
@@ -143,24 +130,28 @@ namespace ChessOpeningsWPF.Chess.SortOfChessAI
         {
             if (depth == 0)
                 return SearchAllCapture(state, alpha, beta);
+
             var moves = state.Board.AllLegalPlayerMoves(state.CurrentTurn);
+
             if (moves.Count == 0)
             {
                 if (state.Board.IsInCheck(state.CurrentTurn))
-                {
                     return int.MinValue;
-                }
+
                 return 0;
             }
 
             foreach (var move in moves)
             {
                 state.MakeMove(move);
+               
                 int evaluation = -SerchBestMove(state, depth - 1, -beta, -alpha);
+               
                 state.UndoMove(move);
 
                 if (evaluation >= beta)
                     return beta;
+                
                 alpha = Math.Max(alpha, evaluation);
             }
             return alpha;
@@ -169,35 +160,52 @@ namespace ChessOpeningsWPF.Chess.SortOfChessAI
         bool MoveIsCheck(GameState state, IMove move)
         {
             state.MakeMove(move);
+            
             bool isMate = state.Board.IsInCheck(state.CurrentTurn);
+            
             state.UndoMove(move);
+            
             return isMate;
         }
+
+        bool PositionOnAttack(BoardModel board, PlayerColor color, Position position) =>
+          board.IsInAttack(color, position);
+
         bool MoveIsOnAttack(GameState state, IMove move)
-        {
+        {            
             state.MakeMove(move);
-            bool isMate = state.Board.IsInAttack(state.CurrentTurn, move.To);
+            
+            var onAttack = PositionOnAttack(state.Board, state.CurrentTurn, move.To);
+            
             state.UndoMove(move);
-            return isMate;
+            
+            return onAttack;
         }
 
         public int SearchAllCapture(GameState state, int alpha, int beta)
         {
             int evaluation = CalculatePoint(state);
+           
             if (evaluation >= beta) 
                 return beta;
+           
             alpha = Math.Max(alpha, evaluation);
 
             var captureMoves = state.Board.AllCapturePlayerMoves(state.CurrentTurn);
+           
             OrderMoves(captureMoves, state);
+           
             foreach (var move in captureMoves)
             {
                 state.MakeMove(move);
+                
                 evaluation = -SearchAllCapture(state, -beta, -alpha);
+               
                 state.UndoMove(move);
 
                 if (evaluation >= beta)
                     return beta;
+
                 alpha = Math.Max(alpha, evaluation);
             }
             return alpha;
@@ -207,6 +215,7 @@ namespace ChessOpeningsWPF.Chess.SortOfChessAI
         {
             var whitePieces = 0;
             var blackPieces = 0;
+           
             state.Board.PiecePositionsByColor(PlayerColor.White).ForEach(p => whitePieces += state.Board[p].Value);
             state.Board.PiecePositionsByColor(PlayerColor.Black).ForEach(p => whitePieces += state.Board[p].Value);
 
@@ -235,39 +244,43 @@ namespace ChessOpeningsWPF.Chess.SortOfChessAI
                 case PieceType.King:
                     return source[5][square.Row, square.Column];
             }
-
             return 0;
-
         }
 
-        private void OrderMoves(List<IMove> moveList, GameState state)
-        {
-            int[] moveScore = new int[moveList.Count];
+        private void OrderMoves(List<IMove> moves, GameState state)
+        {   
+            int[] moveScore = new int[moves.Count];
 
-
-            for (int i = 0; i < moveList.Count; i++)
+            for (int i = 0; i < moves.Count; i++)
             {
-                var movedPiece = state.Board[moveList[i].From];
+                var movedPiece = state.Board[moves[i].From];
 
                 moveScore[i] = 0;
-                if(!state.Board.IsEmptySquare(moveList[i].From) && !state.Board.IsEmptySquare(moveList[i].To))
-                     moveScore[i] += 10 * movedPiece.Value - state.Board[moveList[i].To].Value;
+                
+                if(!state.Board.IsEmptySquare(moves[i].To))
+                {       moveScore[i] += 10 * state.Board[moves[i].To].Value - movedPiece.Value;
 
-                if (moveList[i].Type == MoveType.PawnPromotion)
-                    moveScore[i] += new Queen(PlayerColor.Black, new Position(0,0)).Value;
+                    if (PositionOnAttack(state.Board, movedPiece.Color, moves[i].From))
+                        moveScore[i] -= movedPiece.Value;
 
-                if (MoveIsCheck(state, moveList[i]))
-                   moveScore[i] += int.MaxValue;
+                    if (MoveIsOnAttack(state, moves[i]))
+                        moveScore[i] -= movedPiece.Value * 2;
+                }
+                else if (MoveIsCheck(state, moves[i]))
+                {
+                    if (MoveIsOnAttack(state, moves[i]))
+                        moveScore[i] += movedPiece.Value;
+                    else
+                        moveScore[i] += int.MaxValue;
+                }
+                else
+                    moveScore[i] += GetBestPosition(movedPiece, moves[i].To);
 
-                if (MoveIsOnAttack(state, moveList[i]))
-                    moveScore[i] -= movedPiece.Value;
-
-
-                moveScore[i] += GetBestPosition(movedPiece, moveList[i].To);
-
+                if (moves[i].Type == MoveType.PawnPromotion)
+                    moveScore[i] += new Queen(PlayerColor.Black, new Position(0,0)).Value;             
 
             }
-            Quicksort(moveList, moveScore, 0, moveList.Count - 1);
+            Quicksort(moves, moveScore, 0, moves.Count - 1);
         }
 
         public static void Quicksort(List<IMove> values, int[] scores, int low, int high)

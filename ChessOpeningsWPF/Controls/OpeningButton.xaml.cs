@@ -20,7 +20,7 @@ namespace ChessOpeningsWPF.Controls
 
         private bool _isHovered;
 
-
+        public SolidColorBrush BgBrush {  get => lightLeaveBrush; set => lightLeaveBrush = value; }
         private readonly List<IMove> _moves = new List<IMove>();
 
 
@@ -33,7 +33,6 @@ namespace ChessOpeningsWPF.Controls
             _moves = opening.Moves;
 
             lightEnterBrush = new SolidColorBrush(Color.FromRgb(0xF0, 0xF0, 0xF0));
-            lightLeaveBrush = new SolidColorBrush(Color.FromRgb(0xE0, 0xE0, 0xE0));
 
             _isHovered = false;
 
