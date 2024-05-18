@@ -337,44 +337,5 @@ namespace ChessOpeningsWPF
                 HandelMove(move);
             }
         }
-
-        private void Restart()
-        {
-            _isSarted = false;
-
-            HideHighlights();
-
-            _movesCache.Clear();
-
-            _gameState = new GameState(PlayerColor.White, BoardModel.InitialBoard(_stardedFEN));
-
-            DrawPieces(_gameState.Board);
-        }
-
-        private void ShowEndWindow()
-        {
-            var endGameWindow = new EndGameWindow(this, _gameState.Result);
-            endGameWindow.ShowDialog();
-
-            var restart = endGameWindow.TryAgain;
-            if (restart)
-                Restart();
-            else
-                Application.Current.Shutdown();
-        }
-
-        private void Btn_Start_Click(object sender, RoutedEventArgs e)
-        {
-            if (_isSarted)
-                return;
-
-            _isSarted = true;
-            if (_gameState.CurrentTurn != _gameState.Player)
-            {
-                var move = _gameState.MakeComputerMove();
-                HandelMove(move);
-            }
-
-        }
     }
 } 
