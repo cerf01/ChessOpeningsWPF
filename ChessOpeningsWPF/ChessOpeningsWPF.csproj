@@ -21,6 +21,7 @@
     <None Remove="Chess\Source\Assets\Board\cstBoard.png" />
     <None Remove="Chess\Source\Assets\Board\cstBoard2.png" />
     <None Remove="Chess\Source\Assets\Board\cstBoard3.png" />
+    <None Remove="Chess\Source\Assets\Icons\ChessIcon.ico" />
     <None Remove="Chess\Source\Assets\WhitePieces\BishopW.png" />
     <None Remove="Chess\Source\Assets\WhitePieces\KingW.png" />
     <None Remove="Chess\Source\Assets\WhitePieces\NightW.png" />
@@ -39,6 +40,7 @@
     <Resource Include="Chess\Source\Assets\BlackPieces\RookB.png" />
     <Resource Include="Chess\Source\Assets\Board\Board.png" />
     <Resource Include="Chess\Source\Assets\Board\BoardBackground.png" />
+    <Resource Include="Chess\Source\Assets\Icons\ChessIcon.ico" />
     <Resource Include="Chess\Source\Assets\WhitePieces\BishopW.png" />
     <Resource Include="Chess\Source\Assets\WhitePieces\KingW.png" />
     <Resource Include="Chess\Source\Assets\WhitePieces\NightW.png" />
