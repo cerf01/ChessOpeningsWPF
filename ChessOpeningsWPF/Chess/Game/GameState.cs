@@ -28,7 +28,7 @@ namespace ChessOpeningsWPF.Chess.Game
 
             CurrentTurn = PlayerColor.White;
 
-            _computerPlayer = new ComputerPlayer(5);
+            _computerPlayer = new ComputerPlayer(1);
 
             Board = board;
 
