@@ -57,6 +57,7 @@ namespace ChessOpeningsWPF
         private Brush _squareToMove;
         private Brush _squareOnAttack;
         private string _stardedFEN => "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -";
+        private string _testEndFEN => "4k2r/6r1/8/8/8/8/3R4/R3K3 w Qk -";
         private string _soundPath => "../../../Chess/Source/Sounds/MovePieceSound.wav";
 
         private int moveCounr = 0;
@@ -97,6 +98,8 @@ namespace ChessOpeningsWPF
             _squareToMove = new SolidColorBrush(Color.FromArgb(185, 235, 195, 31));
 
             _squareOnAttack = new SolidColorBrush(Color.FromArgb(185, 175, 16, 16));
+
+            
 
         }
 
@@ -336,6 +339,20 @@ namespace ChessOpeningsWPF
                 var move = _gameState.MakeComputerMove();
                 HandelMove(move);
             }
+        }
+
+        private void Btn_Reset_Click(object sender, RoutedEventArgs e)
+        {
+            Restart();
+        }
+
+        private void Btn_ToEnd_Click(object sender, RoutedEventArgs e)
+        {
+            _isSarted = false;
+
+            _gameState = new GameState(PlayerColor.White, BoardModel.InitialBoard(_testEndFEN));
+
+            DrawPieces(_gameState.Board);
         }
     }
 } 

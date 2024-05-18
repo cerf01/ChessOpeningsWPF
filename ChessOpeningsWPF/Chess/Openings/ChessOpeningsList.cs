@@ -6,8 +6,7 @@ namespace ChessOpeningsWPF.Chess.Openings
 {
     public static class ChessOpeningsList
     {
-        private static ChessOpening _nullOpening = new ChessOpening("Reset board", new List<IMove>());
-        
+
         private static ChessOpening _kingsFianchettoOpening = new ChessOpening(
                 "King's Fianchetto Opening",
                 new List<IMove>()
@@ -218,8 +217,7 @@ namespace ChessOpeningsWPF.Chess.Openings
             });
 
         public static List<ChessOpening> ChessOpenings = new List<ChessOpening>()
-        {
-            _nullOpening,
+        {           
             _kingsPawnOpening,
             _queensPawnOpening,
             _kingsFianchettoOpening,
