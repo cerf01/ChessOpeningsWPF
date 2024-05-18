@@ -31,6 +31,7 @@ namespace ChessOpeningsWPF.Chess.Board.Movement
 
             piece.HasMoved = true;
             
+
             return new List<Position>() { From, To };
         }
 

@@ -9,28 +9,18 @@ using System.Windows;
 
 namespace ChessOpeningsWPF.Chess.Game
 {
-    public delegate void OnMovePiece(IMove move);
     public class GameState
     {
         public BoardModel Board { get; private set; }
         public PlayerColor CurrentTurn { get;private set; }
-
         public GameResult Result { get; private set; }
-
         public PlayerColor Player { get; private set; }
-
         private string _stateString;
-
-        private Stack<string> _stateHistory = new Stack<string>();
-
-        private Stack<BoardModel> _boardHystory = new Stack<BoardModel>();
-
-        public Stack<IPiece> CapchuredPieces = new Stack<IPiece>();
-
+        private Stack<string> _stateHistory;
+        private Stack<BoardModel> _boardHystory ;
+        public Stack<IPiece> CapchuredPieces ;
         private ComputerPlayer _computerPlayer;
-
-        public static event OnMovePiece MovePiece;
-
+        
     
         public GameState(PlayerColor playerColor, BoardModel board)
         {
@@ -43,27 +33,37 @@ namespace ChessOpeningsWPF.Chess.Game
             Board = board;
 
             _stateString = new FENString(CurrentTurn, Board).ToString();
+            
+            _stateHistory = new Stack<string>();
 
             _stateHistory.Push(_stateString);
 
             Result = null;
+
+            _boardHystory = new Stack<BoardModel>();
+
+            CapchuredPieces = new Stack<IPiece>();
+
         }
 
-        public void ResetBoard() 
-            => Board = BoardModel.InitialBoard(_stateString);
+        public void ResetBoard() => 
+            Board = BoardModel.InitialBoard(_stateString);
 
         private PlayerColor ChangeTurn() =>
             CurrentTurn == PlayerColor.White ? PlayerColor.Black: PlayerColor.White;
 
         public List<Position> MakeMove(IMove move)
         {
-
             Board.SetPawnSkipedPosition(CurrentTurn, null);
+
             _boardHystory.Push(Board.Copy());
 
             if (!Board.IsEmptySquare(move.To))
+            {
+                Board.CapturadePiece(Board[move.To]);
                 CapchuredPieces.Push(Board[move.To]);
-
+            }
+            
             var moveToPositions = move.MoveTo(Board);
             
             CurrentTurn = ChangeTurn();
@@ -78,9 +78,7 @@ namespace ChessOpeningsWPF.Chess.Game
             CurrentTurn = ChangeTurn();
             
             _stateHistory.Pop();
-            if(CapchuredPieces.Count > 0)
-                CapchuredPieces.Pop();            
-
+            
             if (_boardHystory.Count > 0)
                 Board = _boardHystory.Pop();
 
@@ -94,11 +92,16 @@ namespace ChessOpeningsWPF.Chess.Game
         {
             if (!Board.AllLegalPlayerMoves(CurrentTurn).Any())
             {
-                if(Board.IsInCheck(CurrentTurn))
+                if (Board.IsInCheck(CurrentTurn))
                     Result = new GameResult(ChangeTurn(), EndGameType.Checkmate);
                 else
                     Result = new GameResult(EndGameType.Stalemate);
-            }                            
+            }
+
+            else if (Board.InsufficientMaterial())
+                Result = new GameResult(EndGameType.InsufficientMaterial);
+            
+
         }
 
         public bool IsGameOver() =>

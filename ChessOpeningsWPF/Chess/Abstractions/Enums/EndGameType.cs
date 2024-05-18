@@ -5,7 +5,5 @@
         Checkmate,
         Stalemate,
         InsufficientMaterial,
-        FiftyMOveRule,
-        ThreefoldRepetition
     }
 }
