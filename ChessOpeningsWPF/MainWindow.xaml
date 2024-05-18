@@ -4,12 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChessOpeningsWPF"
-         xmlns:localControls="clr-namespace:ChessOpeningsWPF.Controls"
         mc:Ignorable="d"
         Title="Chess Openings" Height="750" Width="900" 
         ResizeMode="NoResize" 
         WindowStartupLocation="CenterScreen">
-    <Grid>
+    <Grid >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="220"/>
             <ColumnDefinition Width= "auto"/>
@@ -20,7 +19,8 @@
 
         <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
             <StackPanel x:Name="OpeningsButtons">
-
+                <Button x:Name="Btn_Start" Content="Start" Margin="0,0,0,10" Padding="5" Click="Btn_Start_Click"/>
+                <Button x:Name="Btn_Start2" Content="Star2t" Margin="0,0,0,10" Padding="5" Click="Btn_Start2_Click"/>
             </StackPanel>
         </ScrollViewer>
 
@@ -55,7 +55,7 @@
             <Border BorderBrush="Black" BorderThickness="10" Grid.Row="1" Grid.Column ="1"  Grid.ColumnSpan="8" Grid.RowSpan="8">
                 <Grid  x:Name="BoardSquare" MouseDown="Border_MouseDown"  Height="600" Width="600">
                     <Grid.Background>
-                        <ImageBrush ImageSource="C:\Users\User\source\repos\ChessOpeningsWPF\ChessOpeningsWPF\Chess\Source\Assets\Board\Board.png"/>
+                        <ImageBrush ImageSource="\Chess\Source\Assets\Board\Board.png"/>
                     </Grid.Background>
                     <UniformGrid x:Name="Highlight" Rows="8" Columns="8">
 
@@ -86,7 +86,6 @@
             <TextBlock Text="F" Grid.Column="6" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
             <TextBlock Text="G" Grid.Column="7" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke" />
             <TextBlock Text="H" Grid.Column="8" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke" />
-
         </Grid>
     </Grid>
 </Window>

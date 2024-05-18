@@ -46,6 +46,7 @@ namespace ChessOpeningsWPF.Chess.Board.Movement.SpecialMoves
             var newPiece = CreatePromotionPiece(piece.Color);
 
             board[To] = newPiece;
+
             board[From] = null;
 
             piece.HasMoved = true;

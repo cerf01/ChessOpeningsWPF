@@ -16,6 +16,7 @@ using ChessOpeningsWPF.Chess.Openings;
 using ChessOpeningsWPF.Controls;
 using ChessOpeningsWPF.Chess.Board.Movement;
 using ChessOpeningsWPF.Chess.Game;
+using System.Windows.Documents;
 
 
 namespace ChessOpeningsWPF
@@ -27,7 +28,6 @@ namespace ChessOpeningsWPF
     public delegate void OnPositionSelect(Position position);
 
     public delegate void OnMove(SoundPlayer sound);
-
 
 
     public partial class MainWindow : Window
@@ -46,6 +46,8 @@ namespace ChessOpeningsWPF
 
         private bool _isUsed;
 
+        private bool _isSarted;
+
         private event OnPositionSelect _onFromPositionSelect;
 
         private event OnPositionSelect _onToPositionSelect;
@@ -54,8 +56,10 @@ namespace ChessOpeningsWPF
 
         private Brush _squareToMove;
         private Brush _squareOnAttack;
+        private string _stardedFEN => "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -";
+        private string _soundPath => "../../../Chess/Source/Sounds/MovePieceSound.wav";
 
-        private string _stardedFEN => "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq";
+        private int moveCounr = 0;
 
         public MainWindow()
         {
@@ -68,9 +72,11 @@ namespace ChessOpeningsWPF
 
             _movesCache = new Dictionary<Position, IMove>();
 
-            _soundPlayer = new SoundPlayer(System.IO.Path.GetFullPath("../../../Chess/Source/Sounds/MovePieceSound.wav"));
+            _soundPlayer = new SoundPlayer(System.IO.Path.GetFullPath(_soundPath));
 
             _isUsed = false;
+
+            _isSarted = false;
 
             InitialBoard();
 
@@ -88,23 +94,20 @@ namespace ChessOpeningsWPF
 
             _onMove += OnMove;
 
-            GameState.MovePiece += GameState_MovePiece;
-
             _squareToMove = new SolidColorBrush(Color.FromArgb(185, 235, 195, 31));
-            
+
             _squareOnAttack = new SolidColorBrush(Color.FromArgb(185, 175, 16, 16));
 
-        }
-
-        private void GameState_MovePiece(IMove move)
-        {
-            DrawPiece(_gameState.Board[move.From], move.From.Row, move.From.Column);
-            DrawPiece(_gameState.Board[move.To], move.To.Row, move.To.Column);
         }
 
         private void OnMove(SoundPlayer sound)
         {
             sound.Play();
+
+            _gameState.CheckGameOver();
+
+            if (_gameState.IsGameOver())
+                ShowEndWindow();
         }
 
         private void OnFromPositionSelect(Position position)
@@ -120,7 +123,7 @@ namespace ChessOpeningsWPF
                 SetMovesCache(moves);
                 ShowHighlights();
             }
-            
+
         }
 
         private void OnToPositionSelect(Position position)
@@ -150,18 +153,18 @@ namespace ChessOpeningsWPF
                     button.Title.Foreground = new SolidColorBrush(Color.FromRgb(0xf7, 0xd1, 0x9e));
                 }
 
-                OpeningsButtons.Children.Add(button);  
+                OpeningsButtons.Children.Add(button);
             }
         }
 
         private async Task Button_OnClick(List<IMove> moves)
         {
             OpeningsButtons.IsEnabled = false;
-            Mouse.OverrideCursor = Cursors.Wait;
+            Cursor = Cursors.Wait;
 
             await HandelMoves(moves);
 
-            Mouse.OverrideCursor = Cursors.Arrow;
+            Cursor = Cursors.Arrow;
             OpeningsButtons.IsEnabled = true;
         }
 
@@ -180,7 +183,7 @@ namespace ChessOpeningsWPF
                     GameBoard.Children.Add(image);
 
                     var rectangle = new Rectangle();
-                   
+
                     _highlightsRectangles[r].Add(rectangle);
 
                     Highlight.Children.Add(rectangle);
@@ -193,7 +196,6 @@ namespace ChessOpeningsWPF
 
         public void HandelMove(IMove move)
         {
-
             var moveToPositions = _gameState.MakeMove(move);
 
             if (moveToPositions is null)
@@ -201,17 +203,17 @@ namespace ChessOpeningsWPF
 
             foreach (var position in moveToPositions)
                 DrawPiece(_gameState.Board[position.Row, position.Column], position.Row, position.Column);
-           
-            _gameState.CheckGameOver();
-            
+
             _onMove.Invoke(_soundPlayer);
+            moveCounr++;
+
         }
 
         private void DrawPieces(BoardModel board)
         {
             for (int r = 0; r < 8; r++)
                 for (int c = 0; c < 8; c++)
-                    DrawPiece(board[r, c], r, c);           
+                    DrawPiece(board[r, c], r, c);
         }
 
         private void SetMovesCache(List<IMove> moves)
@@ -251,6 +253,8 @@ namespace ChessOpeningsWPF
 
         private async void Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (!_isSarted)
+                return;
             Point point = e.GetPosition(BoardSquare);
 
             var position = GetSquarePosition(point);
@@ -264,36 +268,80 @@ namespace ChessOpeningsWPF
 
             if (_gameState.CurrentTurn != _gameState.Player)
             {
-
-                HandelMove(_gameState.MakeComputerMove());
+                if (!_gameState.IsGameOver())
+                {
+                    var move = _gameState.MakeComputerMove();
+                    HandelMove(move);
+                }
             }
         }
 
-        /*                private void TryToReload()
-                        {
-                            if (_isUsed)
-                            {
-                                _gameState.Board =  BoardModel.InitialBoard();
-                                DrawPieces(_board);
-                            }
-                            else
-                                _isUsed = true;
-                        }*/
-
+        private void TryToReload()
+        {
+            if (_isUsed)
+            {
+                Restart();
+            }
+            else
+                _isUsed = true;
+        }
 
         public async Task HandelMoves(List<IMove> moves)
         {
-            /*  TryToReload();*/
+            TryToReload();
 
             await Task.Delay(500);
 
             foreach (var move in moves)
             {
                 await Task.Delay(500);
+
+                HandelMove(move);
+            }
+        }
+
+        private void Restart()
+        {
+            _isSarted = false;
+
+            HideHighlights();
+
+            _movesCache.Clear();
+
+            _gameState = new GameState(PlayerColor.White, BoardModel.InitialBoard(_stardedFEN));
+
+            DrawPieces(_gameState.Board);
+        }
+
+        private void ShowEndWindow()
+        {
+            var endGameWindow = new EndGameWindow(this, _gameState.Result);
+            endGameWindow.ShowDialog();
+
+            var restart = endGameWindow.TryAgain;
+            if (restart)
+                Restart();
+            else
+                Application.Current.Shutdown();
+        }
+
+        private void Btn_Start_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isSarted)
+                return;
+
+            _isSarted = true;
+            if (_gameState.CurrentTurn != _gameState.Player)
+            {
+                var move = _gameState.MakeComputerMove();
                 HandelMove(move);
             }
 
         }
+        private void Btn_Start2_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show(moveCounr.ToString());
 
+        }
     }
 } 

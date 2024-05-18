@@ -12,8 +12,11 @@ namespace ChessOpeningsWPF.Chess.Board
 {
     public class BoardModel
     {
-        private List<List<IPiece>> _squares = new List<List<IPiece>>();
-
+        private List<List<IPiece>> _squares;
+        public List<IPiece> AllPieces;
+        public List<IPiece> WhitePieces;
+        public List<IPiece> BlackPieces;
+        public Stack<IPiece> CapchuredPieces = new Stack<IPiece>();
         private Dictionary<PlayerColor, Position> _pawnSkiped = new Dictionary<PlayerColor, Position>()
         {
             {PlayerColor.White, null},
@@ -23,6 +26,14 @@ namespace ChessOpeningsWPF.Chess.Board
 
         public BoardModel()
         {
+            _squares = new List<List<IPiece>>();
+            
+            AllPieces = new List<IPiece>();
+           
+            WhitePieces = new List<IPiece>();
+            
+            BlackPieces = new List<IPiece>();
+           
             InitSquares();
         }
 
@@ -71,6 +82,17 @@ namespace ChessOpeningsWPF.Chess.Board
             }
         }
 
+        public void CapturadePiece(IPiece piece)
+        {
+            var pieceToRemove = AllPieces.Find(p => p.Position == piece.Position);
+            AllPieces.Remove(pieceToRemove);
+
+            if (piece.Color == PlayerColor.White)
+                WhitePieces.Remove(pieceToRemove);
+            else
+                BlackPieces.Remove(pieceToRemove);
+        }
+
         public void SetPiecesFromFEN(string fenString)
         {
             var str = fenString.Split(' ')[0];
@@ -97,10 +119,13 @@ namespace ChessOpeningsWPF.Chess.Board
                     {
                         var pieceColor = char.IsLower(symbol) ? PlayerColor.Black : PlayerColor.White;
                         _squares[rank][file] = GetPieceFormChar(char.ToLower(symbol), pieceColor, rank, file);
+                        AllPieces.Add(_squares[rank][file]);
                         file++;
                     }
                 }
             }
+            BlackPieces = AllPieces.Where(p => p.Color == PlayerColor.Black).ToList();
+            WhitePieces = AllPieces.Where(p => p.Color == PlayerColor.White).ToList();
         }
 
         public bool PawnPromoted(Position position)
@@ -216,6 +241,19 @@ namespace ChessOpeningsWPF.Chess.Board
             foreach (var position in PiecePositions())
                 board[position] = this[position].Copy();
 
+            if (_pawnSkiped[PlayerColor.White] is not null)
+                board.SetPawnSkipedPosition(PlayerColor.White, _pawnSkiped[PlayerColor.White]);
+           
+            if(_pawnSkiped[PlayerColor.Black] is not null)
+                board.SetPawnSkipedPosition(PlayerColor.Black, _pawnSkiped[PlayerColor.Black]);
+
+            board.AllPieces = AllPieces;
+
+            board.BlackPieces = BlackPieces;
+
+            board.WhitePieces = WhitePieces;
+            board.CapchuredPieces = CapchuredPieces;
+
             return board;
         }
 
@@ -265,6 +303,65 @@ namespace ChessOpeningsWPF.Chess.Board
 
             return HasPawnInPosition(color, pawnPositions, skipedPositions);
 
+        }
+
+        public bool InsufficientMaterial()
+        {
+            AllPieces.Clear();
+          
+            BlackPieces.Clear();
+           
+            WhitePieces.Clear();
+
+            foreach (var position in PiecePositions())
+                AllPieces.Add(this[position]);
+
+            if (AllPieces.Count > 5)
+                return false;
+
+            WhitePieces = AllPieces.Where(p => p.Color == PlayerColor.White).ToList();
+            
+            BlackPieces = AllPieces.Where(p => p.Color == PlayerColor.Black).ToList();
+
+            var q = IsKingVsKing() || IsKingNightVsKing() || IsKingBishopVsKing() || IsKingBishopVsKingBishop();
+            var q1 = IsKingVsKing();
+            var q2 = IsKingNightVsKing();
+            var q3 = IsKingBishopVsKing();
+            var q4 = IsKingBishopVsKingBishop();
+            return q;
+        }
+
+        private bool IsKingVsKing() =>
+            AllPieces.Count == 2;
+
+        private bool IsKingBishopVsKing() => 
+            AllPieces.Count == 3 &&
+            (WhitePieces
+                .Where(p => p.Type == PieceType.Bishop)
+                        .Count() == 1 ||
+            BlackPieces
+                .Where(p => p.Type == PieceType.Bishop)
+                        .Count() == 1);
+        private bool IsKingNightVsKing() =>
+          AllPieces.Count == 3 && 
+            (WhitePieces
+                .Where(p => p.Type == PieceType.Night)
+                    .Count() == 1 ||    
+            BlackPieces
+                .Where(p => p.Type == PieceType.Night)
+                    .Count() == 1);
+        
+        private bool IsKingBishopVsKingBishop()
+        {
+            if (AllPieces.Count != 4)
+                return false;
+            
+            if(WhitePieces.Where(p => p.Type == PieceType.Bishop).Count() != 1 || BlackPieces.Where(p => p.Type == PieceType.Bishop).Count() != 1)
+                return false;
+            var wPosition = WhitePieces.First(p => p.Type == PieceType.Bishop).Position;
+            var bPosition = BlackPieces.First(p => p.Type == PieceType.Bishop).Position;
+
+            return wPosition.SqueareColor() == bPosition.SqueareColor();
         }
     }
 }

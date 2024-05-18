@@ -261,13 +261,9 @@ namespace ChessOpeningsWPF.Chess.Game.SortOfChessAI
                 if(!state.Board.IsEmptySquare(moves[i].To))
                    moveScore[i] = 10 * state.Board[moves[i].To].Value - movedPiece.Value;
 
-                 if (MoveIsCheck(state, moves[i]))
-                {
-                    if (MoveIsOnAttack(state, moves[i]))
-                        moveScore[i] += movedPiece.Value;
-                    else
-                        moveScore[i] += int.MaxValue;
-                }
+                if (MoveIsCheck(state, moves[i]))
+                   moveScore[i] += int.MaxValue;
+       
                 if (PositionOnAttack(state.Board, movedPiece.Color, moves[i].From))
                     moveScore[i] -= movedPiece.Value;
 
