@@ -1,5 +1,5 @@
 ﻿using ChessOpeningsWPF.Chess.Abstractions.Interfaces;
-using ChessOpeningsWPF.Chess.Movement;
+using ChessOpeningsWPF.Chess.Board.Movement;
 using System.Collections.Generic;
 
 namespace ChessOpeningsWPF.Chess.Openings

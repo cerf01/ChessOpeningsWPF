@@ -1,5 +1,5 @@
 ﻿using ChessOpeningsWPF.Chess.Board;
-using ChessOpeningsWPF.Chess.Movement;
+using ChessOpeningsWPF.Chess.Board.Movement;
 using System;
 using System.Collections.Generic;
 using System.Linq;

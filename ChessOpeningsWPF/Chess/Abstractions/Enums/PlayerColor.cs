@@ -10,5 +10,6 @@ namespace ChessOpeningsWPF.Chess.Abstractions.Enums
     {
         White,
         Black,
+        None,
     }
 }

@@ -1,7 +1,7 @@
 ﻿using ChessOpeningsWPF.Chess.Abstractions.Enums;
 using ChessOpeningsWPF.Chess.Abstractions.Interfaces;
-using ChessOpeningsWPF.Chess.Movement;
-using ChessOpeningsWPF.Chess.Movement.SpecialMoves;
+using ChessOpeningsWPF.Chess.Board.Movement;
+using ChessOpeningsWPF.Chess.Board.Movement.SpecialMoves;
 using ChessOpeningsWPF.Chess.Pieces;
 using System;
 using System.Collections.Generic;

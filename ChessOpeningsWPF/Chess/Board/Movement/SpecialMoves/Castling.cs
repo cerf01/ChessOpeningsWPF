@@ -1,9 +1,8 @@
 ﻿using ChessOpeningsWPF.Chess.Abstractions.Enums;
 using ChessOpeningsWPF.Chess.Abstractions.Interfaces;
-using ChessOpeningsWPF.Chess.Board;
 using System.Collections.Generic;
 
-namespace ChessOpeningsWPF.Chess.Movement.SpecialMoves
+namespace ChessOpeningsWPF.Chess.Board.Movement.SpecialMoves
 {
     public class Castling : IMove
     {

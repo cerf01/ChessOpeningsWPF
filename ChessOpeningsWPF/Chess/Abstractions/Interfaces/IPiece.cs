@@ -1,6 +1,6 @@
 ﻿using ChessOpeningsWPF.Chess.Abstractions.Enums;
 using ChessOpeningsWPF.Chess.Board;
-using ChessOpeningsWPF.Chess.Movement;
+using ChessOpeningsWPF.Chess.Board.Movement;
 using System.Collections.Generic;
 
 

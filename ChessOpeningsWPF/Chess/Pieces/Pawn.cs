@@ -1,8 +1,8 @@
 ﻿using ChessOpeningsWPF.Chess.Abstractions.Enums;
 using ChessOpeningsWPF.Chess.Abstractions.Interfaces;
 using ChessOpeningsWPF.Chess.Board;
-using ChessOpeningsWPF.Chess.Movement;
-using ChessOpeningsWPF.Chess.Movement.SpecialMoves;
+using ChessOpeningsWPF.Chess.Board.Movement;
+using ChessOpeningsWPF.Chess.Board.Movement.SpecialMoves;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
@@ -17,10 +17,10 @@ namespace ChessOpeningsWPF.Chess.Pieces
         public bool HasMoved { get; set; } = false;
         private List<Direction> _directions => new List<Direction>()
         {
-            Movement.Directions.North,
-            Movement.Directions.South,
-            Movement.Directions.East,
-            Movement.Directions.West,
+            Board.Movement.Directions.North,
+            Board.Movement.Directions.South,
+            Board.Movement.Directions.East,
+            Board.Movement.Directions.West,
         };
         public List<Direction> Directions { get => _directions; }
         public Position Position { get; set; }

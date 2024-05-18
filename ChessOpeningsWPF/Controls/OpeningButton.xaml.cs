@@ -2,6 +2,7 @@
 using ChessOpeningsWPF.Chess.Openings;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -15,12 +16,9 @@ namespace ChessOpeningsWPF.Controls
     public delegate Task OnClickMakeMoveDelegare(List<IMove> moves);
     public partial class OpeningButton : UserControl
     {
-        private SolidColorBrush lightEnterBrush;
-        private SolidColorBrush lightLeaveBrush;
 
         private bool _isHovered;
 
-        public Border BgBrush {  get => ContentBorder; set => ContentBorder = value; }
         private readonly List<IMove> _moves = new List<IMove>();
 
 
@@ -30,15 +28,22 @@ namespace ChessOpeningsWPF.Controls
             InitializeComponent();
 
              Title.Text = opening.Name;
-            _moves = opening.Moves;
-
-            lightEnterBrush = new SolidColorBrush(Color.FromRgb(0xF0, 0xF0, 0xF0));
-
+            _moves = opening.Moves;     
+            
             _isHovered = false;
 
         }
-        private void ChangeBackgroundColor() =>
-            ContentBorder.Background = _isHovered ? lightEnterBrush : lightLeaveBrush;
+        private void ChangeBackgroundColor()
+        {
+            if (_isHovered)
+            {
+                Title.Margin = new Thickness(10,10,10,10);
+            }
+            else 
+            {
+                Title.Margin = new Thickness(0);
+            }
+        }
 
         private void UserControl_MouseEnterOrLeave(object sender, MouseEventArgs e)
         {

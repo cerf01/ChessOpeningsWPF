@@ -3,7 +3,7 @@ using ChessOpeningsWPF.Chess.Abstractions.Interfaces;
 using ChessOpeningsWPF.Chess.Board;
 using System.Text;
 
-namespace ChessOpeningsWPF.Chess
+namespace ChessOpeningsWPF.Chess.Game
 {
     public class FENString
     {

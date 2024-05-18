@@ -1,4 +1,4 @@
-﻿namespace ChessOpeningsWPF.Chess.Movement
+﻿namespace ChessOpeningsWPF.Chess.Board.Movement
 {
     public static class Directions
     {

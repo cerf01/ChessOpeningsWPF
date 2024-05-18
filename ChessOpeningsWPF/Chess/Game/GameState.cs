@@ -1,19 +1,21 @@
 ﻿using ChessOpeningsWPF.Chess.Abstractions.Enums;
 using ChessOpeningsWPF.Chess.Abstractions.Interfaces;
 using ChessOpeningsWPF.Chess.Board;
-using ChessOpeningsWPF.Chess.Movement;
-using ChessOpeningsWPF.Chess.SortOfChessAI;
+using ChessOpeningsWPF.Chess.Board.Movement;
+using ChessOpeningsWPF.Chess.Game.SortOfChessAI;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 
-namespace ChessOpeningsWPF.Chess
+namespace ChessOpeningsWPF.Chess.Game
 {
     public delegate void OnMovePiece(IMove move);
     public class GameState
     {
         public BoardModel Board { get; private set; }
         public PlayerColor CurrentTurn { get;private set; }
+
+        public GameResult Result { get; private set; }
 
         public PlayerColor Player { get; private set; }
 
@@ -43,6 +45,8 @@ namespace ChessOpeningsWPF.Chess
             _stateString = new FENString(CurrentTurn, Board).ToString();
 
             _stateHistory.Push(_stateString);
+
+            Result = null;
         }
 
         public void ResetBoard() 
@@ -86,12 +90,20 @@ namespace ChessOpeningsWPF.Chess
             _computerPlayer.GetBestMove(this);
         
 
-        private void CheckGameOver() 
+        public void CheckGameOver() 
         {
-            if(!Board.AllLegalPlayerMoves(CurrentTurn).Any())          
-                MessageBox.Show("Game over!");
-            
+            if (!Board.AllLegalPlayerMoves(CurrentTurn).Any())
+            {
+                if(Board.IsInCheck(CurrentTurn))
+                    Result = new GameResult(ChangeTurn(), EndGameType.Checkmate);
+                else
+                    Result = new GameResult(EndGameType.Stalemate);
+            }                            
         }
+
+        public bool IsGameOver() =>
+             Result is not null;
+        
 
         private void UpdateStateString()
         {

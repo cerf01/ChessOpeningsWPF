@@ -1,14 +1,8 @@
 ﻿using ChessOpeningsWPF.Chess.Abstractions.Enums;
 using ChessOpeningsWPF.Chess.Abstractions.Interfaces;
-using ChessOpeningsWPF.Chess.Board;
-using ChessOpeningsWPF.Chess.Pieces;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ChessOpeningsWPF.Chess.Movement
+namespace ChessOpeningsWPF.Chess.Board.Movement
 {
     public class NormalMove : IMove
     {

@@ -1,14 +1,14 @@
 ﻿using ChessOpeningsWPF.Chess.Abstractions.Enums;
 using ChessOpeningsWPF.Chess.Abstractions.Interfaces;
 using ChessOpeningsWPF.Chess.Board;
-using ChessOpeningsWPF.Chess.Movement;
+using ChessOpeningsWPF.Chess.Board.Movement;
 using ChessOpeningsWPF.Chess.Pieces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 
-namespace ChessOpeningsWPF.Chess.SortOfChessAI
+namespace ChessOpeningsWPF.Chess.Game.SortOfChessAI
 {
     public class ComputerPlayer
     {
@@ -277,7 +277,7 @@ namespace ChessOpeningsWPF.Chess.SortOfChessAI
                 moveScore[i] += GetBestPosition(movedPiece, moves[i].To);
 
                 if (moves[i].Type == MoveType.PawnPromotion)
-                    moveScore[i] += new Queen(PlayerColor.Black, new Position(0,0)).Value;             
+                    moveScore[i] += new Queen(PlayerColor.None, new Position(0,0)).Value;             
 
             }
             Quicksort(moves, moveScore, 0, moves.Count - 1);

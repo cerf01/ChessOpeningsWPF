@@ -9,43 +9,43 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Chess\AssetsSource\Assets\BlackPieces\BishopB.png" />
-    <None Remove="Chess\AssetsSource\Assets\BlackPieces\KingB.png" />
-    <None Remove="Chess\AssetsSource\Assets\BlackPieces\NightB.png" />
-    <None Remove="Chess\AssetsSource\Assets\BlackPieces\PawnB.png" />
-    <None Remove="Chess\AssetsSource\Assets\BlackPieces\QueenB.png" />
-    <None Remove="Chess\AssetsSource\Assets\BlackPieces\RookB.png" />
-    <None Remove="Chess\AssetsSource\Assets\Board\Board.png" />
-    <None Remove="Chess\AssetsSource\Assets\Board\Board1.png" />
-    <None Remove="Chess\AssetsSource\Assets\Board\BoardBackground.png" />
-    <None Remove="Chess\AssetsSource\Assets\Board\cstBoard.png" />
-    <None Remove="Chess\AssetsSource\Assets\Board\cstBoard2.png" />
-    <None Remove="Chess\AssetsSource\Assets\Board\cstBoard3.png" />
-    <None Remove="Chess\AssetsSource\Assets\WhitePieces\BishopW.png" />
-    <None Remove="Chess\AssetsSource\Assets\WhitePieces\KingW.png" />
-    <None Remove="Chess\AssetsSource\Assets\WhitePieces\NightW.png" />
-    <None Remove="Chess\AssetsSource\Assets\WhitePieces\PawnW.png" />
-    <None Remove="Chess\AssetsSource\Assets\WhitePieces\QueenW.png" />
-    <None Remove="Chess\AssetsSource\Assets\WhitePieces\RookW.png" />
-    <None Remove="Chess\AssetsSource\SoundAssets\MovePieceSound.wav" />
+    <None Remove="Chess\Source\Assets\BlackPieces\BishopB.png" />
+    <None Remove="Chess\Source\Assets\BlackPieces\KingB.png" />
+    <None Remove="Chess\Source\Assets\BlackPieces\NightB.png" />
+    <None Remove="Chess\Source\Assets\BlackPieces\PawnB.png" />
+    <None Remove="Chess\Source\Assets\BlackPieces\QueenB.png" />
+    <None Remove="Chess\Source\Assets\BlackPieces\RookB.png" />
+    <None Remove="Chess\Source\Assets\Board\Board.png" />
+    <None Remove="Chess\Source\Assets\Board\Board1.png" />
+    <None Remove="Chess\Source\Assets\Board\BoardBackground.png" />
+    <None Remove="Chess\Source\Assets\Board\cstBoard.png" />
+    <None Remove="Chess\Source\Assets\Board\cstBoard2.png" />
+    <None Remove="Chess\Source\Assets\Board\cstBoard3.png" />
+    <None Remove="Chess\Source\Assets\WhitePieces\BishopW.png" />
+    <None Remove="Chess\Source\Assets\WhitePieces\KingW.png" />
+    <None Remove="Chess\Source\Assets\WhitePieces\NightW.png" />
+    <None Remove="Chess\Source\Assets\WhitePieces\PawnW.png" />
+    <None Remove="Chess\Source\Assets\WhitePieces\QueenW.png" />
+    <None Remove="Chess\Source\Assets\WhitePieces\RookW.png" />
+    <None Remove="Chess\Source\Sounds\MovePieceSound.wav" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Chess\AssetsSource\Assets\BlackPieces\BishopB.png" />
-    <Resource Include="Chess\AssetsSource\Assets\BlackPieces\KingB.png" />
-    <Resource Include="Chess\AssetsSource\Assets\BlackPieces\NightB.png" />
-    <Resource Include="Chess\AssetsSource\Assets\BlackPieces\PawnB.png" />
-    <Resource Include="Chess\AssetsSource\Assets\BlackPieces\QueenB.png" />
-    <Resource Include="Chess\AssetsSource\Assets\BlackPieces\RookB.png" />
-    <Resource Include="Chess\AssetsSource\Assets\Board\Board.png" />
-    <Resource Include="Chess\AssetsSource\Assets\Board\BoardBackground.png" />
-    <Resource Include="Chess\AssetsSource\Assets\WhitePieces\BishopW.png" />
-    <Resource Include="Chess\AssetsSource\Assets\WhitePieces\KingW.png" />
-    <Resource Include="Chess\AssetsSource\Assets\WhitePieces\NightW.png" />
-    <Resource Include="Chess\AssetsSource\Assets\WhitePieces\PawnW.png" />
-    <Resource Include="Chess\AssetsSource\Assets\WhitePieces\QueenW.png" />
-    <Resource Include="Chess\AssetsSource\Assets\WhitePieces\RookW.png" />
-    <Resource Include="Chess\AssetsSource\SoundAssets\MovePieceSound.wav" />
+    <Resource Include="Chess\Source\Assets\BlackPieces\BishopB.png" />
+    <Resource Include="Chess\Source\Assets\BlackPieces\KingB.png" />
+    <Resource Include="Chess\Source\Assets\BlackPieces\NightB.png" />
+    <Resource Include="Chess\Source\Assets\BlackPieces\PawnB.png" />
+    <Resource Include="Chess\Source\Assets\BlackPieces\QueenB.png" />
+    <Resource Include="Chess\Source\Assets\BlackPieces\RookB.png" />
+    <Resource Include="Chess\Source\Assets\Board\Board.png" />
+    <Resource Include="Chess\Source\Assets\Board\BoardBackground.png" />
+    <Resource Include="Chess\Source\Assets\WhitePieces\BishopW.png" />
+    <Resource Include="Chess\Source\Assets\WhitePieces\KingW.png" />
+    <Resource Include="Chess\Source\Assets\WhitePieces\NightW.png" />
+    <Resource Include="Chess\Source\Assets\WhitePieces\PawnW.png" />
+    <Resource Include="Chess\Source\Assets\WhitePieces\QueenW.png" />
+    <Resource Include="Chess\Source\Assets\WhitePieces\RookW.png" />
+    <Resource Include="Chess\Source\Sounds\MovePieceSound.wav" />
   </ItemGroup>
 
 </Project>
