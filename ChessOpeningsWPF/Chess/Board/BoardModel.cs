@@ -304,7 +304,6 @@ namespace ChessOpeningsWPF.Chess.Board
             return HasPawnInPosition(color, pawnPositions, skipedPositions);
 
         }
-
         public bool InsufficientMaterial()
         {
             AllPieces.Clear();
@@ -323,12 +322,7 @@ namespace ChessOpeningsWPF.Chess.Board
             
             BlackPieces = AllPieces.Where(p => p.Color == PlayerColor.Black).ToList();
 
-            var q = IsKingVsKing() || IsKingNightVsKing() || IsKingBishopVsKing() || IsKingBishopVsKingBishop();
-            var q1 = IsKingVsKing();
-            var q2 = IsKingNightVsKing();
-            var q3 = IsKingBishopVsKing();
-            var q4 = IsKingBishopVsKingBishop();
-            return q;
+            return IsKingVsKing() || IsKingNightVsKing() || IsKingBishopVsKing() || IsKingBishopVsKingBishop();
         }
 
         private bool IsKingVsKing() =>

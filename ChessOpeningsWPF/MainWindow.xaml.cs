@@ -17,6 +17,7 @@ using ChessOpeningsWPF.Controls;
 using ChessOpeningsWPF.Chess.Board.Movement;
 using ChessOpeningsWPF.Chess.Game;
 using System.Windows.Documents;
+using ChessOpeningsWPF.Windows;
 
 
 namespace ChessOpeningsWPF
@@ -231,7 +232,7 @@ namespace ChessOpeningsWPF
         {
             foreach (var position in _movesCache.Keys)
             {
-                if (!_gameState.Board.IsEmptySquare(position) && _gameState.Board[position].Color != _gameState.CurrentTurn)
+                if (!_gameState.Board.IsEmptySquare(position) && _gameState.Board[position].Color != _gameState.CurrentTurn )
                     _highlightsRectangles[position.Row][position.Column].Fill = _squareOnAttack;
                 else
                     _highlightsRectangles[position.Row][position.Column].Fill = _squareToMove;
@@ -353,6 +354,13 @@ namespace ChessOpeningsWPF
             _gameState = new GameState(PlayerColor.White, BoardModel.InitialBoard(_testEndFEN));
 
             DrawPieces(_gameState.Board);
+        }
+
+        private void Btn_PiecesMovemets_Click(object sender, RoutedEventArgs e)
+        {
+            var piecesMovemats = new PiecesMovementsWindow();
+
+            piecesMovemats.Show();
         }
     }
 } 
