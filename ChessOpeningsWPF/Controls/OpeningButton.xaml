@@ -8,7 +8,7 @@
              MouseEnter="UserControl_MouseEnterOrLeave" 
              MouseLeave="UserControl_MouseEnterOrLeave" 
              MouseUp="UserControl_MouseLeftButtonUp">
-    <Border CornerRadius="5" x:Name="ContentBorder"  Background="#E0E0E0" Cursor="Hand" Margin="6">
+    <Border CornerRadius="5" x:Name="ContentBorder" Cursor="Hand" Margin="6">
         <Grid MinHeight="38" Margin="4">
             <TextBlock x:Name="Title" Text="Title" VerticalAlignment="Center" FontSize="14" FontWeight="Bold" Height="18"/>
         </Grid>

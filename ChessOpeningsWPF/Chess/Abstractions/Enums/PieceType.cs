@@ -4,7 +4,7 @@
     {
         Pawn,
         Bishop,
-        Knight,
+        Night,
         Rook,
         Queen,
         King,

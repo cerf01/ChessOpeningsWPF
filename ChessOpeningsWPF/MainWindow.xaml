@@ -5,53 +5,64 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChessOpeningsWPF"
         mc:Ignorable="d"
-        Title="Chess Openings" Height="700" Width="950" 
+        Title="Chess Openings" Height="840" Width="900" 
         ResizeMode="NoResize" 
-        WindowStartupLocation="CenterScreen">
-    <Grid>
+        WindowStartupLocation="CenterScreen"
+        Icon="\Chess\Source\Assets\Icons\ChessIcon.ico">
+    <Grid >
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5*"/>
-            <ColumnDefinition Width= "700"/>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width= "auto"/>
         </Grid.ColumnDefinitions>
+        <Grid.Background>
+            <ImageBrush ImageSource="\Chess\Source\Assets\Board\BoardBackground.png"/>
+        </Grid.Background>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
             <StackPanel x:Name="OpeningsButtons">
 
             </StackPanel>
         </ScrollViewer>
-        
-        <Grid Grid.Column="1" x:Name="BoardGrid">
+
+        <Grid Grid.Column="1" x:Name="BoardGrid" Margin="15">
+
             <Grid.RowDefinitions>
-                <RowDefinition Height="58*"/>
-                <RowDefinition Height="77*"/>
-                <RowDefinition Height="69*"/>
-                <RowDefinition Height="69*"/>
-                <RowDefinition Height="69*"/>
-                <RowDefinition Height="69*"/>
-                <RowDefinition Height="69*"/>
-                <RowDefinition Height="69*"/>
-                <RowDefinition Height="84*"/>
-                <RowDefinition Height="53*"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
 
             <Border BorderBrush="Black" BorderThickness="10" Grid.Row="1" Grid.Column ="1"  Grid.ColumnSpan="8" Grid.RowSpan="8">
-                <Grid >
+                <Grid  x:Name="BoardSquare" MouseDown="Border_MouseDown"  Height="600" Width="600">
                     <Grid.Background>
-                        <ImageBrush ImageSource="\Chess\AssetsSource\Assets\Board\Board.png"/>
+                        <ImageBrush ImageSource="\Chess\Source\Assets\Board\Board.png"/>
                     </Grid.Background>
+                    <UniformGrid x:Name="Highlight" Rows="8" Columns="8">
+
+                    </UniformGrid>
                     <UniformGrid x:Name="GameBoard" Rows="8" Columns="8" RenderOptions.BitmapScalingMode="HighQuality">
 
                     </UniformGrid>
@@ -60,42 +71,28 @@
             </Border>
 
 
-            <!--<TextBlock Text="8" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
+            <TextBlock Text="8" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
             <TextBlock Text="7" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
             <TextBlock Text="6" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
             <TextBlock Text="5" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
             <TextBlock Text="4" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
             <TextBlock Text="3" Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
             <TextBlock Text="2" Grid.Row="7" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
-            <TextBlock Text="1" Grid.Row="8" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>-->
+            <TextBlock Text="1" Grid.Row="8" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
 
-            <TextBlock Text="0" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
-            <TextBlock Text="1" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
-            <TextBlock Text="2" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
-            <TextBlock Text="3" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
-            <TextBlock Text="4" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
-            <TextBlock Text="5" Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
-            <TextBlock Text="6" Grid.Row="7" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
-            <TextBlock Text="7" Grid.Row="8" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
 
-            <!--<TextBlock Text="A" Grid.Column="1" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke" />
+            <TextBlock Text="A" Grid.Column="1" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke" />
             <TextBlock Text="B" Grid.Column="2" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
             <TextBlock Text="C" Grid.Column="3" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke" />
             <TextBlock Text="D" Grid.Column="4" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke" />
             <TextBlock Text="E" Grid.Column="5" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke" />
             <TextBlock Text="F" Grid.Column="6" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
             <TextBlock Text="G" Grid.Column="7" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke" />
-            <TextBlock Text="H" Grid.Column="8" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke" />-->
-
-
-            <TextBlock Text="0" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke" />
-            <TextBlock Text="1" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
-            <TextBlock Text="2" Grid.Column="3" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke" />
-            <TextBlock Text="3" Grid.Column="4" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke" />
-            <TextBlock Text="4" Grid.Column="5" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke" />
-            <TextBlock Text="5" Grid.Column="6" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke"/>
-            <TextBlock Text="6" Grid.Column="7" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke" />
-            <TextBlock Text="7" Grid.Column="8" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke" />
+            <TextBlock Text="H" Grid.Column="8" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="WhiteSmoke" />
+            <Button Grid.Row="10" Grid.Column="3" Grid.ColumnSpan="4" x:Name="Btn_Start" Content="Start" Margin="0,0,0,10" Padding="5" Click="Btn_Start_Click" Cursor="Hand"/>
+            <Button Grid.Row="11" Grid.Column="2" Grid.ColumnSpan="2" x:Name="Btn_Reset" Content="Reset board" Margin="0,0,0,10" Padding="5" Click="Btn_Reset_Click" Cursor="Hand"/>
+            <Button Grid.Row="11" Grid.Column="6" Grid.ColumnSpan="2" x:Name="Btn_ToEnd" Content="Try end position" Margin="0,0,0,10" Padding="5" Click="Btn_ToEnd_Click" Cursor="Hand"/>
+            <Button Grid.Row="12" Grid.Column="7" Content="Pieces movements" Grid.ColumnSpan="2" Click="Btn_PiecesMovemets_Click" Cursor="Hand"/>
         </Grid>
     </Grid>
 </Window>

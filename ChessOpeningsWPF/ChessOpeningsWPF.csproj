@@ -9,16 +9,65 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Chess\AssetsSource\Assets\Board.png" />
-    <None Remove="Chess\AssetsSource\Assets\Board\Board2.png" />
+    <None Remove="Chess\Source\Assets\BlackPieces\BishopB.png" />
+    <None Remove="Chess\Source\Assets\BlackPieces\KingB.png" />
+    <None Remove="Chess\Source\Assets\BlackPieces\NightB.png" />
+    <None Remove="Chess\Source\Assets\BlackPieces\PawnB.png" />
+    <None Remove="Chess\Source\Assets\BlackPieces\QueenB.png" />
+    <None Remove="Chess\Source\Assets\BlackPieces\RookB.png" />
+    <None Remove="Chess\Source\Assets\Board\Board.png" />
+    <None Remove="Chess\Source\Assets\Board\Board1.png" />
+    <None Remove="Chess\Source\Assets\Board\BoardBackground.png" />
+    <None Remove="Chess\Source\Assets\Board\cstBoard.png" />
+    <None Remove="Chess\Source\Assets\Board\cstBoard2.png" />
+    <None Remove="Chess\Source\Assets\Board\cstBoard3.png" />
+    <None Remove="Chess\Source\Assets\Icons\ChessIcon.ico" />
+    <None Remove="Chess\Source\Assets\Moves\Bishop\Move.png" />
+    <None Remove="Chess\Source\Assets\Moves\King\Castling.png" />
+    <None Remove="Chess\Source\Assets\Moves\King\Move.png" />
+    <None Remove="Chess\Source\Assets\Moves\Knight\Move.png" />
+    <None Remove="Chess\Source\Assets\Moves\Pawn\Attack.png" />
+    <None Remove="Chess\Source\Assets\Moves\Pawn\EnPassant.png" />
+    <None Remove="Chess\Source\Assets\Moves\Pawn\Move.png" />
+    <None Remove="Chess\Source\Assets\Moves\Pawn\PawnPromotion.png" />
+    <None Remove="Chess\Source\Assets\Moves\Queen\Move.png" />
+    <None Remove="Chess\Source\Assets\Moves\Rook\Move.png" />
+    <None Remove="Chess\Source\Assets\WhitePieces\BishopW.png" />
+    <None Remove="Chess\Source\Assets\WhitePieces\KingW.png" />
+    <None Remove="Chess\Source\Assets\WhitePieces\NightW.png" />
+    <None Remove="Chess\Source\Assets\WhitePieces\PawnW.png" />
+    <None Remove="Chess\Source\Assets\WhitePieces\QueenW.png" />
+    <None Remove="Chess\Source\Assets\WhitePieces\RookW.png" />
+    <None Remove="Chess\Source\Sounds\MovePieceSound.wav" />
   </ItemGroup>
 
   <ItemGroup>
-    <Page Remove="Control\OpeningButton.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Chess\AssetsSource\Assets\Board\Board.png" />
+    <Resource Include="Chess\Source\Assets\BlackPieces\BishopB.png" />
+    <Resource Include="Chess\Source\Assets\BlackPieces\KingB.png" />
+    <Resource Include="Chess\Source\Assets\BlackPieces\NightB.png" />
+    <Resource Include="Chess\Source\Assets\BlackPieces\PawnB.png" />
+    <Resource Include="Chess\Source\Assets\BlackPieces\QueenB.png" />
+    <Resource Include="Chess\Source\Assets\BlackPieces\RookB.png" />
+    <Resource Include="Chess\Source\Assets\Board\Board.png" />
+    <Resource Include="Chess\Source\Assets\Board\BoardBackground.png" />
+    <Resource Include="Chess\Source\Assets\Icons\ChessIcon.ico" />
+    <Resource Include="Chess\Source\Assets\Moves\Bishop\Move.png" />
+    <Resource Include="Chess\Source\Assets\Moves\King\Castling.png" />
+    <Resource Include="Chess\Source\Assets\Moves\King\Move.png" />
+    <Resource Include="Chess\Source\Assets\Moves\Knight\Move.png" />
+    <Resource Include="Chess\Source\Assets\Moves\Pawn\Attack.png" />
+    <Resource Include="Chess\Source\Assets\Moves\Pawn\EnPassant.png" />
+    <Resource Include="Chess\Source\Assets\Moves\Pawn\Move.png" />
+    <Resource Include="Chess\Source\Assets\Moves\Pawn\PawnPromotion.png" />
+    <Resource Include="Chess\Source\Assets\Moves\Queen\Move.png" />
+    <Resource Include="Chess\Source\Assets\Moves\Rook\Move.png" />
+    <Resource Include="Chess\Source\Assets\WhitePieces\BishopW.png" />
+    <Resource Include="Chess\Source\Assets\WhitePieces\KingW.png" />
+    <Resource Include="Chess\Source\Assets\WhitePieces\NightW.png" />
+    <Resource Include="Chess\Source\Assets\WhitePieces\PawnW.png" />
+    <Resource Include="Chess\Source\Assets\WhitePieces\QueenW.png" />
+    <Resource Include="Chess\Source\Assets\WhitePieces\RookW.png" />
+    <Resource Include="Chess\Source\Sounds\MovePieceSound.wav" />
   </ItemGroup>
 
 </Project>
